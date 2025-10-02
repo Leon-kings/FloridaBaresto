@@ -390,7 +390,7 @@ export const Footer = () => {
                 whileInView={{ opacity: 1 }}
                 className="text-gray-400 text-xs xsm:text-sm text-center xsm:text-left order-2 xsm:order-1"
               >
-                © 2024 Vista Bar & Resto. All rights reserved.
+                © 2025 Vista Bar & Resto. All rights reserved.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0 }}

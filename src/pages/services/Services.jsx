@@ -305,9 +305,9 @@ export const Services = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br rounded-2xl mt-2 from-gray-900 via-gray-800 to-gray-900 text-white">
+      <div className="min-h-screen bg-gradient-to-br rounded-2xl mt-2 mb-1  from-gray-900 via-gray-800 to-gray-900 text-white">
         {/* Enhanced Hero Section */}
-        <section className="relative p-4 bg-gradient-to-r from-amber-900 via-amber-800 to-yellow-900 overflow-hidden">
+        <section className="relative p-4  rounded-3xl bg-gradient-to-r from-amber-900 via-amber-800 to-yellow-900 overflow-hidden">
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-black opacity-40"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60"></div>
@@ -343,7 +343,7 @@ export const Services = () => {
               >
                 <button
                   onClick={() => handleBookingOpen()}
-                  className="bg-white text-amber-800 hover:bg-amber-50 px-6 xsm:px-8 py-3 xsm:py-4 rounded-xl font-bold text-sm xsm:text-base sm:text-lg transition-all duration-300 shadow-2xl hover:scale-105 hover:shadow-amber-200/50"
+                  className="bg-gradient-to-b from-blue-400 to-indigo-400 px-6 xsm:px-8 py-3 xsm:py-4 rounded-xl font-bold text-sm xsm:text-base sm:text-lg transition-all duration-300 shadow-2xl hover:scale-105 hover:shadow-amber-200/50"
                 >
                   Book Now
                 </button>
@@ -547,7 +547,7 @@ export const Services = () => {
         </section>
 
         {/* Enhanced Amenities Section */}
-        <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-800 to-gray-900">
+        <section className="py-12 rounded-b-2xl sm:py-16 md:py-20 bg-gradient-to-b from-gray-800 to-gray-900">
           <div className="container mx-auto px-3 xsm:px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}

@@ -556,7 +556,7 @@ const StatCard = ({ title, value, change, icon, color, loading = false }) => {
 };
 
 // Main Dashboard Component
-export const DashboardPage = () => {
+export const UserDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [userModalOpen, setUserModalOpen] = useState(false);
