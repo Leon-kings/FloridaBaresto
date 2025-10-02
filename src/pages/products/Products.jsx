@@ -8,7 +8,6 @@ import {
   LocalCafe,
   Restaurant,
   WineBar,
-  Icecream,
   ShoppingCart,
   Close,
   Add,
@@ -22,6 +21,8 @@ import {
   Image as ImageIcon,
   Payment,
   Smartphone,
+  Info,
+  Receipt,
 } from "@mui/icons-material";
 
 export const Products = () => {
@@ -32,17 +33,17 @@ export const Products = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isOrderInfoModalOpen, setIsOrderInfoModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
-    customerNumber: "",
     location: "onsite",
   });
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [checkoutStatus, setCheckoutStatus] = useState(null); // 'success', 'error', null
+  const [checkoutStatus, setCheckoutStatus] = useState(null);
 
   const itemsPerPage = 12;
 
@@ -53,10 +54,10 @@ export const Products = () => {
       icon: <LocalBar className="mr-2" />,
       subCategories: {
         beers: {
-          title: "Beers",
+          title: "BEER",
           subSubCategories: {
             blarirwa: {
-              title: "Blarirwa Beers",
+              title: "BLARIRWA",
               items: [
                 {
                   id: 1,
@@ -100,7 +101,7 @@ export const Products = () => {
               ],
             },
             skol: {
-              title: "Skol Beers",
+              title: "SKOL",
               items: [
                 {
                   id: 6,
@@ -137,7 +138,7 @@ export const Products = () => {
               ],
             },
             other: {
-              title: "Other Beers",
+              title: "OTHERS",
               items: [
                 {
                   id: 10,
@@ -176,7 +177,7 @@ export const Products = () => {
           },
         },
         liquors: {
-          title: "Liquors & Spirits",
+          title: "LIQUOR",
           items: [
             {
               id: 14,
@@ -184,7 +185,7 @@ export const Products = () => {
               price: 100000,
               type: "bottle",
               image:
-                    "https://media.liquormax.com/eq4rxnkvcouvc1anfqqhe/088110011406.jpg",
+                "https://media.liquormax.com/eq4rxnkvcouvc1anfqqhe/088110011406.jpg",
             },
             {
               id: 15,
@@ -192,7 +193,7 @@ export const Products = () => {
               price: 90000,
               type: "bottle",
               image:
-                    "https://images-svetnapojov-cdn.rshop.sk/gallery-big/products/0f3f4d696d6b90d59649b7c1b5617a10.png",
+                "https://images-svetnapojov-cdn.rshop.sk/gallery-big/products/0f3f4d696d6b90d59649b7c1b5617a10.png",
             },
             {
               id: 16,
@@ -200,7 +201,7 @@ export const Products = () => {
               price: 100000,
               type: "bottle",
               image:
-                    "https://images.squarespace-cdn.com/content/v1/644f9d1d4925e04e12ba122a/1705956371538-GONODXVC4PQDE2VFRFE8/Chivas.png",
+                "https://images.squarespace-cdn.com/content/v1/644f9d1d4925e04e12ba122a/1705956371538-GONODXVC4PQDE2VFRFE8/Chivas.png",
             },
             {
               id: 17,
@@ -208,7 +209,7 @@ export const Products = () => {
               price: 125000,
               type: "bottle",
               image:
-                    "https://boozeone.ph/cdn/shop/files/3_d68988b8-9676-4f53-a07c-996cec6b7390.png?v=1686849118&width=3840",
+                "https://boozeone.ph/cdn/shop/files/3_d68988b8-9676-4f53-a07c-996cec6b7390.png?v=1686849118&width=3840",
             },
             {
               id: 18,
@@ -216,7 +217,7 @@ export const Products = () => {
               price: 100000,
               type: "bottle",
               image:
-                    "https://www.wine-searcher.com/images/labels/66/39/10976639.jpg",
+                "https://www.wine-searcher.com/images/labels/66/39/10976639.jpg",
             },
             {
               id: 19,
@@ -224,7 +225,7 @@ export const Products = () => {
               price: 200000,
               type: "bottle",
               image:
-                    "https://cdn11.bigcommerce.com/s-kkxmb/images/stencil/1280x1280/products/3556/13224/1637657378924544767__33874.1707273103.jpg?c=2&imbypass=on",
+                "https://cdn11.bigcommerce.com/s-kkxmb/images/stencil/1280x1280/products/3556/13224/1637657378924544767__33874.1707273103.jpg?c=2&imbypass=on",
             },
             {
               id: 20,
@@ -232,7 +233,7 @@ export const Products = () => {
               price: 100000,
               type: "bottle",
               image:
-                    "https://shreeramkenya.com/wp-content/uploads/2021/06/IMG_8399-scaled.jpg",
+                "https://shreeramkenya.com/wp-content/uploads/2021/06/IMG_8399-scaled.jpg",
             },
             {
               id: 21,
@@ -240,7 +241,7 @@ export const Products = () => {
               price: 200000,
               type: "bottle",
               image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ-SQVzi1k5cpANOzMV_ZsJ50-4UwWABC6Ew&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ-SQVzi1k5cpANOzMV_ZsJ50-4UwWABC6Ew&s",
             },
             {
               id: 22,
@@ -248,7 +249,7 @@ export const Products = () => {
               price: 40000,
               type: "bottle",
               image:
-                    "https://5pmsomewhereja.com/cdn/shop/products/RemyMartinVSOP-3.jpg?v=1670522280&width=1445",
+                "https://5pmsomewhereja.com/cdn/shop/products/RemyMartinVSOP-3.jpg?v=1670522280&width=1445",
             },
             {
               id: 23,
@@ -256,7 +257,7 @@ export const Products = () => {
               price: 200000,
               type: "bottle",
               image:
-                    "https://ginfling.nl/pub/media/catalog/product/cache/8981f8e3f39dfdcfb5ae82d173e66caa/h/e/hennessy_vs_cognac_perfect_serve.jpg",
+                "https://ginfling.nl/pub/media/catalog/product/cache/8981f8e3f39dfdcfb5ae82d173e66caa/h/e/hennessy_vs_cognac_perfect_serve.jpg",
             },
             {
               id: 24,
@@ -264,7 +265,7 @@ export const Products = () => {
               price: 250000,
               type: "bottle",
               image:
-                    "https://empirewine.imgix.net/item-uuid/5036-230E1121.jpeg?auto=compress&fm=jpg&fit=max&fill-color=FFFFFF&pad=20&h=600&w=600",
+                "https://empirewine.imgix.net/item-uuid/5036-230E1121.jpeg?auto=compress&fm=jpg&fit=max&fill-color=FFFFFF&pad=20&h=600&w=600",
             },
             {
               id: 25,
@@ -272,7 +273,7 @@ export const Products = () => {
               price: 2500,
               type: "bottle",
               image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYEohFswrqVkpE_8dXoNHO26ltdZNerX_wIg&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYEohFswrqVkpE_8dXoNHO26ltdZNerX_wIg&s",
             },
             {
               id: 26,
@@ -280,7 +281,7 @@ export const Products = () => {
               price: 15000,
               type: "bottle",
               image:
-                    "https://images.onebasket.rw/insecure/fit/1000/1000/ce/0/plain/https://onebasket-assets.s3.af-south-1.amazonaws.com/58bec9/prods/SOpk2D5uOlrPqoXf4iOyIk7BPxxRFNh3CjCjFxtD.png@webp",
+                "https://images.onebasket.rw/insecure/fit/1000/1000/ce/0/plain/https://onebasket-assets.s3.af-south-1.amazonaws.com/58bec9/prods/SOpk2D5uOlrPqoXf4iOyIk7BPxxRFNh3CjCjFxtD.png@webp",
             },
             {
               id: 27,
@@ -288,7 +289,7 @@ export const Products = () => {
               price: 75000,
               type: "bottle",
               image:
-                    "https://images-svetnapojov-cdn.rshop.sk/gallery-big/products/4761ab086ea93e4bb2b4309242a6c95e.png",
+                "https://images-svetnapojov-cdn.rshop.sk/gallery-big/products/4761ab086ea93e4bb2b4309242a6c95e.png",
             },
             {
               id: 28,
@@ -296,7 +297,7 @@ export const Products = () => {
               price: 80000,
               type: "bottle",
               image:
-                    "https://cdn.tasteatlas.com/images/ingredients/6165666c50444ad6bf431e5a6ec396c8.jpg?w=600",
+                "https://cdn.tasteatlas.com/images/ingredients/6165666c50444ad6bf431e5a6ec396c8.jpg?w=600",
             },
             {
               id: 29,
@@ -304,7 +305,7 @@ export const Products = () => {
               price: 70000,
               type: "bottle",
               image:
-                    "https://capecornwallrum.com/cdn/shop/files/White_70cl_01_1024x1024.jpg?v=1706186193",
+                "https://capecornwallrum.com/cdn/shop/files/White_70cl_01_1024x1024.jpg?v=1706186193",
             },
             {
               id: 30,
@@ -312,7 +313,7 @@ export const Products = () => {
               price: 85000,
               type: "bottle",
               image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ299VDiNWPeOiYEWq4-g_ezXOeuE5PnzN3bw&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ299VDiNWPeOiYEWq4-g_ezXOeuE5PnzN3bw&s",
             },
             {
               id: 31,
@@ -320,12 +321,12 @@ export const Products = () => {
               price: 95000,
               type: "bottle",
               image:
-                    "https://images.ctfassets.net/p1wk6poseifr/lvStu0H80957bU9VWepYw/cb8c72410a7a2b27a7b51269b494026a/Bailey_Chocolate_Martini.jpg",
+                "https://images.ctfassets.net/p1wk6poseifr/lvStu0H80957bU9VWepYw/cb8c72410a7a2b27a7b51269b494026a/Bailey_Chocolate_Martini.jpg",
             },
           ],
         },
         wines: {
-          title: "Wines",
+          title: "WINE",
           items: [
             {
               id: 32,
@@ -333,7 +334,7 @@ export const Products = () => {
               price: 25000,
               type: "bottle",
               image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiE_wWVKrMqIE_gc0ZWndIt9yuqi5xAZefIQ&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiE_wWVKrMqIE_gc0ZWndIt9yuqi5xAZefIQ&s",
             },
             {
               id: 33,
@@ -341,7 +342,7 @@ export const Products = () => {
               price: 28000,
               type: "bottle",
               image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzfB-E-SR8iXAvLewfj-NMjurcc7oqLSIrUw&s",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzfB-E-SR8iXAvLewfj-NMjurcc7oqLSIrUw&s",
             },
             {
               id: 34,
@@ -349,7 +350,7 @@ export const Products = () => {
               price: 22000,
               type: "bottle",
               image:
-                    "https://vinobucks.de/shop/images/product_images/original_images/3915.jpg",
+                "https://vinobucks.de/shop/images/product_images/original_images/3915.jpg",
             },
             {
               id: 35,
@@ -357,7 +358,7 @@ export const Products = () => {
               price: 24000,
               type: "bottle",
               image:
-                    "https://spectus.com.cy/wp-content/uploads/2025/01/Hubert-Brochard-IGP-Sauvignon-Blanc.jpg",
+                "https://spectus.com.cy/wp-content/uploads/2025/01/Hubert-Brochard-IGP-Sauvignon-Blanc.jpg",
             },
             {
               id: 36,
@@ -365,7 +366,7 @@ export const Products = () => {
               price: 20000,
               type: "bottle",
               image:
-                    "https://grandeurwines.com/cdn/shop/products/grandeur-wines-rose-2022-AE3A8999_2048x.jpg?v=1672957019",
+                "https://grandeurwines.com/cdn/shop/products/grandeur-wines-rose-2022-AE3A8999_2048x.jpg?v=1672957019",
             },
             {
               id: 37,
@@ -373,7 +374,7 @@ export const Products = () => {
               price: 35000,
               type: "bottle",
               image:
-                    "https://images.giftpro.co.uk/product-image/1200/1cd6f344-a527-4417-8c2c-2a3656f762ed.jpg",
+                "https://images.giftpro.co.uk/product-image/1200/1cd6f344-a527-4417-8c2c-2a3656f762ed.jpg",
             },
             {
               id: 38,
@@ -381,7 +382,7 @@ export const Products = () => {
               price: 30000,
               type: "bottle",
               image:
-                    "https://grape-to-glass.com/wp-content/uploads/2020/05/Dessert-Wine-Banner-01-1568x816.jpg",
+                "https://grape-to-glass.com/wp-content/uploads/2020/05/Dessert-Wine-Banner-01-1568x816.jpg",
             },
             {
               id: 39,
@@ -389,12 +390,12 @@ export const Products = () => {
               price: 32000,
               type: "bottle",
               image:
-                    "https://upload.wikimedia.org/wikipedia/commons/a/aa/Madeira_Wine.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/a/aa/Madeira_Wine.jpg",
             },
           ],
         },
         soft: {
-          title: "Soft Drinks",
+          title: "SOFT",
           items: [
             {
               id: 40,
@@ -402,7 +403,7 @@ export const Products = () => {
               price: 1000,
               type: "bottle",
               image:
-                    "https://comores-en-ligne.fr/_next/image?url=https%3A%2F%2Fwww.comores-en-ligne.fr%2Fmedia%2Fimages%2Fproducts%2F2024%2F10%2Fboire1.png&w=1920&q=75",
+                "https://comores-en-ligne.fr/_next/image?url=https%3A%2F%2Fwww.comores-en-ligne.fr%2Fmedia%2Fimages%2Fproducts%2F2024%2F10%2Fboire1.png&w=1920&q=75",
             },
             {
               id: 41,
@@ -410,7 +411,7 @@ export const Products = () => {
               price: 1500,
               type: "bottle",
               image:
-                    "https://isokko.com/m/media/upload/photos/2024/07/free_sawacitife45caa7dfaa65172efd83d634b6f7281722008280.jpg",
+                "https://isokko.com/m/media/upload/photos/2024/07/free_sawacitife45caa7dfaa65172efd83d634b6f7281722008280.jpg",
             },
             {
               id: 42,
@@ -418,7 +419,7 @@ export const Products = () => {
               price: 1000,
               type: "bottle",
               image:
-                    "https://hafiexpo.com/uploads/images/202506/img_683deb1d5a2529-67397665.png",
+                "https://hafiexpo.com/uploads/images/202506/img_683deb1d5a2529-67397665.png",
             },
             {
               id: 43,
@@ -426,7 +427,7 @@ export const Products = () => {
               price: 1500,
               type: "bottle",
               image:
-                    "https://unblast.com/wp-content/uploads/2018/06/Juice-Bottle-Mockup-with-Fruit.jpg",
+                "https://unblast.com/wp-content/uploads/2018/06/Juice-Bottle-Mockup-with-Fruit.jpg",
             },
             {
               id: 44,
@@ -434,7 +435,7 @@ export const Products = () => {
               price: 1000,
               type: "bottle",
               image:
-                    "https://assets.untappd.com/photo/2017_06_28/0dd72b53b21059c29a099ecb5a7b65c1_320x320.jpeg",
+                "https://assets.untappd.com/photo/2017_06_28/0dd72b53b21059c29a099ecb5a7b65c1_320x320.jpeg",
             },
             {
               id: 45,
@@ -442,7 +443,7 @@ export const Products = () => {
               price: 1300,
               type: "bottle",
               image:
-                    "https://m.media-amazon.com/images/I/71Cd1SW1pVL._SL1500_.jpg",
+                "https://m.media-amazon.com/images/I/71Cd1SW1pVL._SL1500_.jpg",
             },
             {
               id: 46,
@@ -450,7 +451,7 @@ export const Products = () => {
               price: 1000,
               type: "bottle",
               image:
-                    "https://rwandamart.rw/wp-content/uploads/2021/06/FantaOrange-0001.jpg",
+                "https://rwandamart.rw/wp-content/uploads/2021/06/FantaOrange-0001.jpg",
             },
             {
               id: 47,
@@ -458,7 +459,7 @@ export const Products = () => {
               price: 1300,
               type: "bottle",
               image:
-                    "https://www.coca-cola.com/content/dam/onexp/us/en/brands/coca-cola-spiced/coke-product-category-card.png",
+                "https://www.coca-cola.com/content/dam/onexp/us/en/brands/coca-cola-spiced/coke-product-category-card.png",
             },
             {
               id: 48,
@@ -466,7 +467,7 @@ export const Products = () => {
               price: 1300,
               type: "bottle",
               image:
-                    "https://t3.ftcdn.net/jpg/02/86/26/86/360_F_286268644_FJxZ9RW8bXWWiaZgKajwnwEZ61ynkfOp.jpg",
+                "https://t3.ftcdn.net/jpg/02/86/26/86/360_F_286268644_FJxZ9RW8bXWWiaZgKajwnwEZ61ynkfOp.jpg",
             },
             {
               id: 49,
@@ -474,7 +475,7 @@ export const Products = () => {
               price: 2000,
               type: "bottle",
               image:
-                    "https://healthmylifestyle.com/wp-content/uploads/2023/01/Fresh-squeezed-orange-juice-featured-500x500.jpg",
+                "https://healthmylifestyle.com/wp-content/uploads/2023/01/Fresh-squeezed-orange-juice-featured-500x500.jpg",
             },
             {
               id: 50,
@@ -482,7 +483,7 @@ export const Products = () => {
               price: 2000,
               type: "bottle",
               image:
-                    "https://images.albertsons-media.com/is/image/ABS/120020370-C1N1?$ng-ecom-pdp-desktop$&defaultImage=Not_Available",
+                "https://images.albertsons-media.com/is/image/ABS/120020370-C1N1?$ng-ecom-pdp-desktop$&defaultImage=Not_Available",
             },
             {
               id: 51,
@@ -490,7 +491,7 @@ export const Products = () => {
               price: 2000,
               type: "bottle",
               image:
-                    "https://www.harney.com/cdn/shop/files/Harney_Sons_Pineapple_Juice_Mood.jpg?v=1731079555&width=1110",
+                "https://www.harney.com/cdn/shop/files/Harney_Sons_Pineapple_Juice_Mood.jpg?v=1731079555&width=1110",
             },
           ],
         },
@@ -506,7 +507,7 @@ export const Products = () => {
           price: 2000,
           type: "single",
           image:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNNc4qZ41PL9F2CQ1zQve8fqh5zbqKQ7WTWQ&s",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNNc4qZ41PL9F2CQ1zQve8fqh5zbqKQ7WTWQ&s",
         },
         {
           id: 53,
@@ -514,7 +515,7 @@ export const Products = () => {
           price: 1500,
           type: "single",
           image:
-                "https://www.wakacoffee.com/cdn/shop/articles/what-is-lungo-espresso-coffee.jpg?v=1593313291",
+            "https://www.wakacoffee.com/cdn/shop/articles/what-is-lungo-espresso-coffee.jpg?v=1593313291",
         },
         {
           id: 54,
@@ -522,7 +523,7 @@ export const Products = () => {
           price: 1000,
           type: "single",
           image:
-                "https://blogstudio.s3.theshoppad.net/coffeeheroau/10897ed60052f2aa1a495aa1c02a8ce6.jpg",
+            "https://blogstudio.s3.theshoppad.net/coffeeheroau/10897ed60052f2aa1a495aa1c02a8ce6.jpg",
         },
         {
           id: 55,
@@ -530,7 +531,7 @@ export const Products = () => {
           price: 2000,
           type: "single",
           image:
-                "https://www.spoton.com/blog/content/images/2024/04/espresso-shot-coffee-1.jpeg",
+            "https://www.spoton.com/blog/content/images/2024/04/espresso-shot-coffee-1.jpeg",
         },
         {
           id: 56,
@@ -538,7 +539,7 @@ export const Products = () => {
           price: 2000,
           type: "single",
           image:
-                "https://brot.ae/cdn/shop/files/double-espresso-side-view-Photoroom_450x450.jpg?v=1745579487",
+            "https://brot.ae/cdn/shop/files/double-espresso-side-view-Photoroom_450x450.jpg?v=1745579487",
         },
         {
           id: 57,
@@ -546,7 +547,7 @@ export const Products = () => {
           price: 1500,
           type: "single",
           image:
-                "https://www.cabuccoffee.com/site/sized/104609/2023/09/trk-kahvesi-2-kopya-1200x9000.webp",
+            "https://www.cabuccoffee.com/site/sized/104609/2023/09/trk-kahvesi-2-kopya-1200x9000.webp",
         },
         {
           id: 58,
@@ -554,7 +555,7 @@ export const Products = () => {
           price: 2500,
           type: "single",
           image:
-                "https://vinbarista.com/uploads/news/cappuccino-la-gi-cach-lam-1-ly-cafe-cappuccino-chuan-vi-y-202212231043.png",
+            "https://vinbarista.com/uploads/news/cappuccino-la-gi-cach-lam-1-ly-cafe-cappuccino-chuan-vi-y-202212231043.png",
         },
         {
           id: 59,
@@ -562,7 +563,7 @@ export const Products = () => {
           price: 2500,
           type: "single",
           image:
-                "https://abeautifulmess.com/wp-content/uploads/2023/05/latte-500x500.jpg",
+            "https://abeautifulmess.com/wp-content/uploads/2023/05/latte-500x500.jpg",
         },
         {
           id: 60,
@@ -570,15 +571,8 @@ export const Products = () => {
           price: 2200,
           type: "single",
           image:
-                "https://www.tankcoffee.com/wp-content/uploads/2023/07/A_close-up_shot_of_a_classic_Italian_macchiato.png",
+            "https://www.tankcoffee.com/wp-content/uploads/2023/07/A_close-up_shot_of_a_classic_Italian_macchiato.png",
         },
-        // { id: 61, name: "MOCHA", price: 2800, type: "single", image: "" },
-        // { id: 62, name: "AFFOGATO", price: 3000, type: "single", image: "" },
-        // { id: 63, name: "IRISH COFFEE", price: 3500, type: "single", image: "" },
-        // { id: 64, name: "VIENNESE COFFEE", price: 3200, type: "single", image: "" },
-        // { id: 65, name: "TURKISH COFFEE", price: 1800, type: "single", image: "" },
-        // { id: 66, name: "COLD BREW", price: 2200, type: "single", image: "" },
-        // { id: 67, name: "FLAT WHITE", price: 2600, type: "single", image: "" }
       ],
     },
     cocktail: {
@@ -592,7 +586,7 @@ export const Products = () => {
           price: 8000,
           type: "single",
           image:
-                "https://www.pastrywishes.com/wp-content/uploads/2022/06/virgin-mojito-with-sprite-square.jpg",
+            "https://www.pastrywishes.com/wp-content/uploads/2022/06/virgin-mojito-with-sprite-square.jpg",
         },
         {
           id: 69,
@@ -601,7 +595,7 @@ export const Products = () => {
           price: 12000,
           type: "custom",
           image:
-                "https://media.istockphoto.com/id/690259246/photo/bartender-guy-working-prepare-cocktail-skills.jpg?s=612x612&w=0&k=20&c=8RCiLB2D8owWIHZWuMJG1Rr0yl5nJNdpA4pb57eyR6k=",
+            "https://media.istockphoto.com/id/690259246/photo/bartender-guy-working-prepare-cocktail-skills.jpg?s=612x612&w=0&k=20&c=8RCiLB2D8owWIHZWuMJG1Rr0yl5nJNdpA4pb57eyR6k=",
         },
         {
           id: 70,
@@ -610,7 +604,7 @@ export const Products = () => {
           price: 10000,
           type: "single",
           image:
-                "https://www.tammileetips.com/wp-content/uploads/2023/05/Vodka-Sunrise-Recipe.jpg",
+            "https://www.tammileetips.com/wp-content/uploads/2023/05/Vodka-Sunrise-Recipe.jpg",
         },
         {
           id: 71,
@@ -627,7 +621,7 @@ export const Products = () => {
           price: 15000,
           type: "single",
           image:
-                "https://britneybreaksbread.com/wp-content/uploads/2022/07/amf-drink-6.jpg",
+            "https://britneybreaksbread.com/wp-content/uploads/2022/07/amf-drink-6.jpg",
         },
         {
           id: 73,
@@ -636,7 +630,7 @@ export const Products = () => {
           price: 10000,
           type: "single",
           image:
-                "https://www.liquor.com/thmb/oWq-2scokVB56sgAYk3ksulN33Y=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/tequila-sunrise-1500x785-twitter-a6d1393909b843598a682808f94d3065.jpg",
+            "https://www.liquor.com/thmb/oWq-2scokVB56sgAYk3ksulN33Y=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/tequila-sunrise-1500x785-twitter-a6d1393909b843598a682808f94d3065.jpg",
         },
         {
           id: 74,
@@ -645,7 +639,7 @@ export const Products = () => {
           price: 12000,
           type: "single",
           image:
-                "https://filodeagave.com/wp-content/uploads/2024/05/Classic-Margarita-Recipe-with-Tequila-Filo-de-Agave-Blanco-v002.jpg",
+            "https://filodeagave.com/wp-content/uploads/2024/05/Classic-Margarita-Recipe-with-Tequila-Filo-de-Agave-Blanco-v002.jpg",
         },
         {
           id: 75,
@@ -654,7 +648,7 @@ export const Products = () => {
           price: 13000,
           type: "single",
           image:
-                "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2FPhoto%2FRecipes%2F2024-07-pina-colada%2Fpina-colada-177",
+            "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2FPhoto%2FRecipes%2F2024-07-pina-colada%2Fpina-colada-177",
         },
         {
           id: 76,
@@ -663,7 +657,7 @@ export const Products = () => {
           price: 11000,
           type: "single",
           image:
-                "https://frobishers.com/cdn/shop/articles/Screenshot_2024-08-16_at_12.55.17.png?v=1724236070",
+            "https://frobishers.com/cdn/shop/articles/Screenshot_2024-08-16_at_12.55.17.png?v=1724236070",
         },
         {
           id: 77,
@@ -672,7 +666,7 @@ export const Products = () => {
           price: 12500,
           type: "single",
           image:
-                "https://hips.hearstapps.com/hmg-prod/images/sex-on-the-beach-index-6442f7c402c66.jpg?crop=0.888888888888889xw:1xh;center,top&resize=1200:*",
+            "https://hips.hearstapps.com/hmg-prod/images/sex-on-the-beach-index-6442f7c402c66.jpg?crop=0.888888888888889xw:1xh;center,top&resize=1200:*",
         },
         {
           id: 78,
@@ -681,7 +675,7 @@ export const Products = () => {
           price: 9000,
           type: "single",
           image:
-                "https://assets.malibudrinks.com/wp-content/uploads/2024/02/Malibu-Mojito-16x9-2-scaled.jpg?tr=q-80,w-2560",
+            "https://assets.malibudrinks.com/wp-content/uploads/2024/02/Malibu-Mojito-16x9-2-scaled.jpg?tr=q-80,w-2560",
         },
         {
           id: 79,
@@ -690,7 +684,7 @@ export const Products = () => {
           price: 11000,
           type: "single",
           image:
-                "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_4:3/k%2FPhoto%2FRecipes%2F2024-03-whiskey-sour%2Fwhiskey-sour-699_1",
+            "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_4:3/k%2FPhoto%2FRecipes%2F2024-03-whiskey-sour%2Fwhiskey-sour-699_1",
         },
         {
           id: 80,
@@ -699,7 +693,7 @@ export const Products = () => {
           price: 16000,
           type: "single",
           image:
-                "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2011/4/25/0/CCWM_Long-Island-Ice-Tea_s3x4.jpg.rend.hgtvcom.1280.960.suffix/1572356786983.webp",
+            "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2011/4/25/0/CCWM_Long-Island-Ice-Tea_s3x4.jpg.rend.hgtvcom.1280.960.suffix/1572356786983.webp",
         },
         {
           id: 81,
@@ -708,7 +702,7 @@ export const Products = () => {
           price: 9500,
           type: "single",
           image:
-                "https://www.thebottleclub.com/cdn/shop/articles/TBC_recipe_image_11-436716.jpg?v=1707230647",
+            "https://www.thebottleclub.com/cdn/shop/articles/TBC_recipe_image_11-436716.jpg?v=1707230647",
         },
         {
           id: 82,
@@ -717,7 +711,7 @@ export const Products = () => {
           price: 14000,
           type: "single",
           image:
-                "https://cdn.loveandlemons.com/wp-content/uploads/2025/02/manhattan-drink.jpg",
+            "https://cdn.loveandlemons.com/wp-content/uploads/2025/02/manhattan-drink.jpg",
         },
       ],
     },
@@ -731,7 +725,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://chickenairfryerrecipes.com/wp-content/uploads/2023/08/Air-Fryer-Whole-Chicken-Wing-9.jpg",
+            "https://chickenairfryerrecipes.com/wp-content/uploads/2023/08/Air-Fryer-Whole-Chicken-Wing-9.jpg",
         },
         {
           id: 84,
@@ -739,7 +733,7 @@ export const Products = () => {
           price: 2500,
           type: "single",
           image:
-                "https://www.favfamilyrecipes.com/wp-content/uploads/2024/11/Oven-Roast-Beef-sliced.jpg",
+            "https://www.favfamilyrecipes.com/wp-content/uploads/2024/11/Oven-Roast-Beef-sliced.jpg",
         },
         {
           id: 85,
@@ -747,7 +741,7 @@ export const Products = () => {
           price: 10000,
           type: "single",
           image:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkcFG9XCFPY8xdI9pKcDjYWDc70-9qc1jejQ&s",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkcFG9XCFPY8xdI9pKcDjYWDc70-9qc1jejQ&s",
         },
         {
           id: 86,
@@ -762,7 +756,7 @@ export const Products = () => {
           price: 2000,
           type: "single",
           image:
-                "https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2013/05/04/1367702494brochettes.jpg",
+            "https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2013/05/04/1367702494brochettes.jpg",
         },
         {
           id: 88,
@@ -770,7 +764,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://foodtasia.com/wp-content/uploads/2021/07/banana-milkshake-34.jpg",
+            "https://foodtasia.com/wp-content/uploads/2021/07/banana-milkshake-34.jpg",
         },
         {
           id: 89,
@@ -778,7 +772,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://amandascookin.com/wp-content/uploads/2021/06/salted-caramel-milkshake-RC-SQ.jpg",
+            "https://amandascookin.com/wp-content/uploads/2021/06/salted-caramel-milkshake-RC-SQ.jpg",
         },
         {
           id: 90,
@@ -786,7 +780,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://bakewithshivesh.com/wp-content/uploads/2021/07/image-scaled.jpg",
+            "https://bakewithshivesh.com/wp-content/uploads/2021/07/image-scaled.jpg",
         },
         {
           id: 91,
@@ -794,7 +788,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://brooklynfarmgirl.com/wp-content/uploads/2021/03/The-Best-Chocolate-Milkshake-Featured-Image.jpg",
+            "https://brooklynfarmgirl.com/wp-content/uploads/2021/03/The-Best-Chocolate-Milkshake-Featured-Image.jpg",
         },
         {
           id: 92,
@@ -802,7 +796,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://minimalistbaker.com/wp-content/uploads/2022/04/Strawberry-Milkshake-SQUARE.jpg",
+            "https://minimalistbaker.com/wp-content/uploads/2022/04/Strawberry-Milkshake-SQUARE.jpg",
         },
         {
           id: 93,
@@ -810,7 +804,7 @@ export const Products = () => {
           price: 5000,
           type: "single",
           image:
-                "https://www.allrecipes.com/thmb/uzxCGTc-5WCUZnZ7BUcYcmWKxjo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-48974-vanilla-milkshake-hero-4x3-c815295c714f41f6b17b104e7403a53b.jpg",
+            "https://www.allrecipes.com/thmb/uzxCGTc-5WCUZnZ7BUcYcmWKxjo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-48974-vanilla-milkshake-hero-4x3-c815295c714f41f6b17b104e7403a53b.jpg",
         },
         {
           id: 94,
@@ -818,7 +812,7 @@ export const Products = () => {
           price: 8000,
           type: "single",
           image:
-                "https://www.spiceindiaonline.com/wp-content/uploads/2021/05/Tandoori-Chicken-20-500x400.jpg",
+            "https://www.spiceindiaonline.com/wp-content/uploads/2021/05/Tandoori-Chicken-20-500x400.jpg",
         },
         {
           id: 95,
@@ -826,7 +820,7 @@ export const Products = () => {
           price: 12000,
           type: "single",
           image:
-                "https://i.ytimg.com/vi/Z5om96jjvjA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD9KAclM5STZq1Tsm7TnpZOHXDEJQ",
+            "https://i.ytimg.com/vi/Z5om96jjvjA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD9KAclM5STZq1Tsm7TnpZOHXDEJQ",
         },
         {
           id: 96,
@@ -834,7 +828,7 @@ export const Products = () => {
           price: 15000,
           type: "single",
           image:
-                "https://thumbs.dreamstime.com/b/grilled-fish-plate-freshly-caught-fish-served-sliced-tomatoes-lemons-perfect-casual-dining-scene-388256090.jpg",
+            "https://thumbs.dreamstime.com/b/grilled-fish-plate-freshly-caught-fish-served-sliced-tomatoes-lemons-perfect-casual-dining-scene-388256090.jpg",
         },
         {
           id: 97,
@@ -842,7 +836,7 @@ export const Products = () => {
           price: 6000,
           type: "single",
           image:
-                "https://www.unileverfoodsolutions.co.za/dam/global-ufs/mcos/SOUTH-AFRICA/calcmenu/recipes/ZA-recipes/general/beef-burger/main-header.jpg",
+            "https://www.unileverfoodsolutions.co.za/dam/global-ufs/mcos/SOUTH-AFRICA/calcmenu/recipes/ZA-recipes/general/beef-burger/main-header.jpg",
         },
         {
           id: 98,
@@ -850,7 +844,7 @@ export const Products = () => {
           price: 5500,
           type: "single",
           image:
-                "https://www.datocms-assets.com/129288/1725393944-moist-chicken-burgers.jpg",
+            "https://www.datocms-assets.com/129288/1725393944-moist-chicken-burgers.jpg",
         },
         {
           id: 99,
@@ -858,7 +852,7 @@ export const Products = () => {
           price: 3000,
           type: "single",
           image:
-                "https://www.awesomecuisine.com/wp-content/uploads/2009/05/french-fries.jpg",
+            "https://www.awesomecuisine.com/wp-content/uploads/2009/05/french-fries.jpg",
         },
         {
           id: 100,
@@ -866,7 +860,7 @@ export const Products = () => {
           price: 3500,
           type: "single",
           image:
-                "https://smokinandgrillinwitab.com/wp-content/uploads/2025/02/iStock-2188707691-scaled.jpg",
+            "https://smokinandgrillinwitab.com/wp-content/uploads/2025/02/iStock-2188707691-scaled.jpg",
         },
       ],
     },
@@ -920,7 +914,6 @@ export const Products = () => {
   const handleAddToCart = (item) => {
     setSelectedItem(item);
     setQuantity(item.type === "bottle" ? 1 : 1);
-    // Automatically open the cart modal in center
     setIsCartOpen(true);
   };
 
@@ -978,22 +971,15 @@ export const Products = () => {
       return;
     }
 
-    const orderData = {
-      customer: customerInfo,
-      items: cart,
-      total: getTotalPrice(),
-      timestamp: new Date().toISOString(),
-    };
-
     try {
-      // Simulate API call
       setCheckoutStatus("loading");
+      setIsCustomerInfoOpen(false);
 
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Simulate successful order
-      const success = Math.random() > 0.2; // 80% success rate for demo
+      const success = Math.random() > 0.2;
 
       if (success) {
         setCheckoutStatus("success");
@@ -1002,11 +988,12 @@ export const Products = () => {
           autoClose: 3000,
         });
 
-        // Close customer info modal and open payment modal
-        setIsCustomerInfoOpen(false);
+        // Close loading modal and open order info modal
         setTimeout(() => {
-          setIsPaymentModalOpen(true);
-        }, 300);
+          setCheckoutStatus(null);
+          setIsOrderInfoModalOpen(true);
+        }, 1000);
+        
       } else {
         setCheckoutStatus("error");
         toast.error("Failed to place order. Please try again.", {
@@ -1020,8 +1007,14 @@ export const Products = () => {
         position: "top-right",
         autoClose: 3000,
       });
-      console.error("Error submitting order:", error);
     }
+  };
+
+  const proceedToPayment = () => {
+    setIsOrderInfoModalOpen(false);
+    setTimeout(() => {
+      setIsPaymentModalOpen(true);
+    }, 300);
   };
 
   const completePayment = () => {
@@ -1033,12 +1026,11 @@ export const Products = () => {
       setCustomerInfo({
         name: "",
         phone: "",
-        customerNumber: "",
         location: "onsite",
       });
       setCheckoutStatus(null);
       
-      toast.success("Payment instructions received! Your order is being processed.", {
+      toast.success("Payment completed! Your order is being processed.", {
         position: "top-right",
         autoClose: 4000,
       });
@@ -1069,14 +1061,14 @@ export const Products = () => {
 
   return (
     <>
-      <div className="min-h-screen mt-2 mb-1 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <div className="w-full flex-wrap min-h-screen items-center mt-2 mb-1 mx-0 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-black bg-opacity-90 backdrop-blur-lg sticky top-0 z-50 shadow-lg"
+          className="bg-gradient-to-b from-gray-700 justify-center items- to-gray-800 bg-opacity-90 top-0 z-50 "
         >
-          <div className="container mx-auto px-2 xs:px-3 sm:px-4 py-3 sm:py-4">
+          <div className="py-3 md:justify-center md:items-center px-2 sm:py-4">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <div className="flex items-center">
                 <button
@@ -1144,8 +1136,8 @@ export const Products = () => {
             </AnimatePresence>
 
             {/* Desktop Category Navigation */}
-            <div className="hidden lg:block overflow-x-auto">
-              <div className="flex space-x-1 pb-2 min-w-max">
+            <div className="hidden lg:block justify-center items-center overflow-x-auto">
+              <div className="flex justify-center space-x-1 pb-2 w-full">
                 {Object.keys(menuData).map((category) => (
                   <button
                     key={category}
@@ -1174,7 +1166,7 @@ export const Products = () => {
                 animate={{ opacity: 1, height: "auto" }}
                 className="mt-2"
               >
-                <div className="flex space-x-1 xs:space-x-2 overflow-x-auto pb-2">
+                <div className="flex space-x-1 justify-center xs:space-x-2 overflow-x-auto pb-2">
                   {Object.keys(menuData.drinks.subCategories).map(
                     (subCategory) => (
                       <button
@@ -1229,7 +1221,7 @@ export const Products = () => {
         </motion.header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-2 xs:px-3 sm:px-4 py-4 xs:py-6 sm:py-8">
+        <main className=" px-2 xs:px-3 sm:px-4 py-4 xs:py-6 sm:py-8">
           {/* Category Header */}
           <motion.div
             key={`${activeCategory}-${activeSubCategory}-${activeBeerSubCategory}`}
@@ -1351,7 +1343,7 @@ export const Products = () => {
           )}
         </main>
 
-        {/* Add to Cart Modal - Centered */}
+        {/* Add to Cart Modal */}
         <AnimatePresence>
           {isCartOpen && selectedItem && (
             <>
@@ -1381,7 +1373,6 @@ export const Products = () => {
                     </button>
                   </div>
 
-                  {/* Item Image in Modal */}
                   <div className="relative h-36 xs:h-40 sm:h-48 mb-3 xs:mb-4 rounded-lg xs:rounded-xl overflow-hidden bg-gray-700">
                     <img
                       src={selectedItem.image}
@@ -1632,24 +1623,6 @@ export const Products = () => {
 
                     <div>
                       <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
-                        Customer Number
-                      </label>
-                      <input
-                        type="text"
-                        value={customerInfo.customerNumber}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            customerNumber: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-2 xs:px-3 sm:px-4 py-1 xs:py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-xs xs:text-sm sm:text-base transition-all"
-                        placeholder="Optional customer number"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
                         <LocationOn className="mr-1 xs:mr-2 text-xs xs:text-sm" />
                         Location
                       </label>
@@ -1693,6 +1666,104 @@ export const Products = () => {
           )}
         </AnimatePresence>
 
+        {/* Order Information Modal */}
+        <AnimatePresence>
+          {isOrderInfoModalOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black overflow-y-auto bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+                onClick={() => setIsOrderInfoModalOpen(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-gradient-to-br from-gray-800 to-gray-900 mt-8 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto border border-gray-700 shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex justify-between items-center mb-4 xs:mb-6">
+                    <h3 className="text-base xs:text-lg sm:text-xl font-bold text-amber-400 flex items-center">
+                      <Info className="mr-2 text-amber-400" />
+                      Order Information
+                    </h3>
+                    <button
+                      onClick={() => setIsOrderInfoModalOpen(false)}
+                      className="text-gray-400 hover:text-white bg-gradient-to-t from-red-700 to-red-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
+                    >
+                      <Close className="text-sm xs:text-base" />
+                    </button>
+                  </div>
+
+                  <div className="text-center mb-4 xs:mb-6">
+                    <div className="w-16 h-16 xs:w-20 xs:h-20 bg-gradient-to-t from-green-600 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4">
+                      <Receipt className="text-white text-xl xs:text-2xl" />
+                    </div>
+                    <h4 className="text-lg xs:text-xl font-bold text-white mb-2">
+                      Order Confirmed!
+                    </h4>
+                    <p className="text-gray-300 text-xs xs:text-sm mb-4 xs:mb-6">
+                      Your order has been received and is being processed
+                    </p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg xs:rounded-xl p-3 xs:p-4 mb-4 xs:mb-6 border border-gray-600">
+                    <h5 className="text-amber-300 font-bold text-xs xs:text-sm mb-2 xs:mb-3 flex items-center">
+                      <Person className="mr-2 text-xs xs:text-sm" />
+                      Customer Details
+                    </h5>
+                    <div className="space-y-2 text-white text-xs xs:text-sm">
+                      <p><strong>Name:</strong> {customerInfo.name}</p>
+                      <p><strong>Phone:</strong> {customerInfo.phone}</p>
+                      <p><strong>Location:</strong> {customerInfo.location}</p>
+                      <p><strong>Order Total:</strong> {formatPrice(getTotalPrice())} RWF</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-amber-900 to-amber-800 rounded-lg xs:rounded-xl p-3 xs:p-4 mb-4 xs:mb-6 border border-amber-600">
+                    <h5 className="text-amber-300 font-bold text-xs xs:text-sm mb-2 xs:mb-3">
+                      Order Summary
+                    </h5>
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {cart.map((item) => (
+                        <div key={item.id} className="flex justify-between text-white text-xs xs:text-sm">
+                          <span>{item.quantity}x {item.name}</span>
+                          <span>{formatPrice(item.totalPrice)} RWF</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-amber-500 mt-2 pt-2 flex justify-between text-white text-xs xs:text-sm font-bold">
+                      <span>Total:</span>
+                      <span>{formatPrice(getTotalPrice())} RWF</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg xs:rounded-xl p-3 xs:p-4 mb-4 xs:mb-6 border border-blue-600">
+                    <h5 className="text-blue-300 font-bold text-xs xs:text-sm mb-2 xs:mb-3">
+                      Next Steps
+                    </h5>
+                    <ol className="text-white text-xs xs:text-sm space-y-1 xs:space-y-2 list-decimal list-inside">
+                      <li>Proceed to payment using Mobile Money</li>
+                      <li>You will receive payment instructions</li>
+                      <li>Complete the payment process</li>
+                      <li>Your order will be prepared immediately</li>
+                    </ol>
+                  </div>
+
+                  <button
+                    onClick={proceedToPayment}
+                    className="w-full bg-gradient-to-t from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-green-500/25"
+                  >
+                    Proceed to Payment
+                  </button>
+                </motion.div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
         {/* Mobile Money Payment Modal */}
         <AnimatePresence>
           {isPaymentModalOpen && (
@@ -1701,7 +1772,7 @@ export const Products = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+                className="fixed inset-0 bg-black overflow-y-auto bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
                 onClick={() => setIsPaymentModalOpen(false)}
               >
                 <motion.div
@@ -1980,7 +2051,7 @@ export const Products = () => {
                   {cart.length > 0 && (
                     <div className="border-t border-gray-700 pt-3 xs:pt-4">
                       <div className="flex justify-between items-center mb-3 xs:mb-4">
-                        <span className="text-base xs:text-lg sm:text-xl font-bold">
+                        <span className="text-base text-blue-300 xs:text-lg sm:text-xl font-bold">
                           Total:
                         </span>
                         <span className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">

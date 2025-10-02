@@ -138,7 +138,7 @@ export const Footer = () => {
 
   return (
     <>
-      <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white border-t border-gray-700">
+      <footer className="bg-gradient-to-br justify-center items-center from-gray-900 to-gray-800 text-white border-t border-gray-700">
         {/* Newsletter Section */}
         <section className="bg-gradient-to-r from-amber-600 to-amber-700 py-8 xsm:py-10 sm:py-12 md:py-14 lg:py-16">
           <div className="container mx-auto px-3 xsm:px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
@@ -261,8 +261,12 @@ export const Footer = () => {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-xl xsm:text-2xl sm:text-3xl font-bold text-white">VISTA</h3>
-                      <p className="text-amber-400 text-xs xsm:text-sm">Bar & Resto</p>
+                      <h3 className="text-xl xsm:text-2xl sm:text-3xl font-bold text-white">
+                        VISTA
+                      </h3>
+                      <p className="text-amber-400 text-xs xsm:text-sm">
+                        Bar & Resto
+                      </p>
                     </div>
                   </div>
 
@@ -282,7 +286,9 @@ export const Footer = () => {
                         transition={{ delay: index * 0.1 }}
                         className={`bg-gray-800 hover:bg-amber-600 p-2 xsm:p-3 rounded-lg xsm:rounded-xl transition-all duration-300 ${social.color} transform hover:scale-110`}
                       >
-                        <span className="text-base xsm:text-lg">{social.icon}</span>
+                        <span className="text-base xsm:text-lg">
+                          {social.icon}
+                        </span>
                       </motion.a>
                     ))}
                   </div>
@@ -340,9 +346,13 @@ export const Footer = () => {
                         className="flex items-start space-x-2 xsm:space-x-3 text-gray-400"
                       >
                         <div className="text-amber-400 mt-0.5 xsm:mt-1 flex-shrink-0">
-                          <span className="text-base xsm:text-lg">{contact.icon}</span>
+                          <span className="text-base xsm:text-lg">
+                            {contact.icon}
+                          </span>
                         </div>
-                        <span className="leading-relaxed text-sm xsm:text-base">{contact.text}</span>
+                        <span className="leading-relaxed text-sm xsm:text-base">
+                          {contact.text}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
@@ -371,7 +381,9 @@ export const Footer = () => {
                         <div className="font-semibold text-amber-400 text-xs xsm:text-sm">
                           {schedule.day}
                         </div>
-                        <div className="text-xs xsm:text-sm">{schedule.hours}</div>
+                        <div className="text-xs xsm:text-sm">
+                          {schedule.hours}
+                        </div>
                       </motion.div>
                     ))}
                   </div>

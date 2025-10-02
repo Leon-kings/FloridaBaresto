@@ -42,8 +42,7 @@ export const Hero = () => {
     },
     {
       id: 2,
-      image:
-        "https://m.dining-out.co.za/ftp/Gallery/10134-15603-32305.jpg",
+      image: "https://m.dining-out.co.za/ftp/Gallery/10134-15603-32305.jpg",
       title: "Skyline Rooftop Bar",
       location: "New York, USA",
       description:
@@ -147,7 +146,7 @@ export const Hero = () => {
             >
               <img
                 src={slides[currentSlide].image}
-                alt=''
+                alt=""
                 className="w-full h-full object-cover"
               />
               {/* Gradient Overlay */}
@@ -223,7 +222,7 @@ export const Hero = () => {
                     }}
                     whileTap={{ scale: 0.9 }}
                     onClick={prevSlide}
-                    className="bg-white/10 backdrop-blur-md text-white p-3 rounded-full border border-white/20 transition-all"
+                    className="bg-gradient-to-b from-blue-400 to-indigo-400 p-3 rounded-full border transition-all"
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </motion.button>
@@ -234,36 +233,10 @@ export const Hero = () => {
                     }}
                     whileTap={{ scale: 0.9 }}
                     onClick={nextSlide}
-                    className="bg-white/10 backdrop-blur-md text-white p-3 rounded-full border border-white/20 transition-all"
+                    className="bg-gradient-to-b from-blue-400 to-indigo-400 backdrop-blur-md text-white p-3 rounded-full border transition-all"
                   >
                     <ChevronRight className="h-6 w-6" />
                   </motion.button>
-                </div>
-
-                {/* Thumbnails */}
-                <div className="flex space-x-4">
-                  {slides.map((slide, index) => (
-                    <motion.button
-                      key={slide.id}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => goToSlide(index)}
-                      className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                        index === currentSlide
-                          ? "border-white scale-110"
-                          : "border-white/30 hover:border-white/60"
-                      }`}
-                    >
-                      <img
-                        src={slide.image}
-                        alt=''
-                        className="w-full h-full object-cover"
-                      />
-                      {index === currentSlide && (
-                        <div className="absolute inset-0 bg-blue-600/20" />
-                      )}
-                    </motion.button>
-                  ))}
                 </div>
               </motion.div>
             </div>
@@ -310,7 +283,7 @@ const SlideInfoModal = ({ slide }) => {
               <div className="relative">
                 <img
                   src={slide.image}
-                  alt=''
+                  alt=""
                   className="w-full h-64 object-cover rounded-t-2xl"
                 />
                 <button
@@ -446,7 +419,10 @@ const ContactModal = ({ slide }) => {
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4 text-black overflow-y-auto">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 text-black overflow-y-auto"
+                >
                   <div className="grid grid-cols-2 gap-4">
                     <input
                       type="text"
