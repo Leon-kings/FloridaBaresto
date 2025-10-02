@@ -42,6 +42,12 @@ export const Navbar = () => {
     },
     {
       id: 2,
+      name: "About",
+      href: "/about",
+      icon: <AboutIcon className="h-5 w-5" />,
+    },
+    {
+      id: 3,
       name: "Services",
       href: "/services",
       icon: <SensorsRounded className="h-5 w-5" />,
@@ -601,7 +607,10 @@ const AuthModal = ({
               </div>
 
               {/* Form */}
-              <form onSubmit={onSubmit} className="space-y-6 text-black overflow-y-auto">
+              <form
+                onSubmit={onSubmit}
+                className="space-y-6 text-black overflow-y-auto"
+              >
                 {!isLogin && (
                   <div className="relative">
                     <AccountCircle className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -678,7 +687,6 @@ const AuthModal = ({
                 </motion.button>
               </form>
 
-
               {/* Switch Auth Type */}
               <div className="text-center mt-6 pt-6 border-t border-gray-200">
                 <p className="text-gray-600">
@@ -701,8 +709,6 @@ const AuthModal = ({
   );
 };
 
-
-
 const AuthIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -715,15 +721,11 @@ const UserProfileIcon = ({ className }) => (
   </svg>
 );
 
-
-
 const AboutIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M13 8a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6v2h6v-2z" />
   </svg>
 );
-
-
 
 const LoginIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
