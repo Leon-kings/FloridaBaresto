@@ -8,6 +8,7 @@ import Home from "./pages/home/Home";
 import { DashboardPage } from "./dashboard/admin/Dashboard";
 import { About } from "./pages/about/About";
 import { Services } from "./pages/services/Services";
+import { Products } from "./pages/products/Products";
 // BackToTop component with Tailwind
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -61,6 +62,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/products" element={<Products />} />
           </Routes>
         </div>
         <BackToTop />

@@ -23,37 +23,37 @@ export const About = () => {
   const galleryImages = [
     {
       id: 1,
-      src: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+      src: "https://headbox-media.imgix.net/spaces/34068/photos/8846c8fb-cec1-4e63-8728-eaf8bd7b9c1c_DSCF0442.jpg?auto=format&ar=3%3A2&fit=crop&q=60&ixlib=react-9.5.4",
       title: "Main Bar Area",
       description: "Our beautifully crafted main bar with premium spirits",
     },
     {
       id: 2,
-      src: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80",
+      src: "https://www.contemporist.com/wp-content/uploads/2017/01/modern-rooftop-terrace-020117-1032-01-800x534.jpg",
       title: "Rooftop Terrace",
       description: "Stunning city views from our rooftop seating area",
     },
     {
       id: 3,
-      src: "https://images.unsplash.com/photo-1564631029896-4d1f6d8a5c80?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      src: "https://interiordesign.net/wp-content/uploads/2023/09/Interior-Design-3877-Aslin-Beer-Company-Pittsburgh-3877_Aslin_Pittsburgh_Credit_to_Ed_Massery_5.jpg",
       title: "Brewery Section",
       description: "Our on-site microbrewery with craft beer selections",
     },
     {
       id: 4,
-      src: "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80",
+      src: "https://www.gotolouisville.com/imager/s3_us-east-1_amazonaws_com/louisville-2019/images/Watch-Hill-Proper-June-6-20223811a_f69c17b56b270deda0220b2ba6b4d051.jpg",
       title: "Whiskey Lounge",
       description: "Exclusive whiskey tasting area with rare collections",
     },
     {
       id: 5,
-      src: "https://images.unsplash.com/photo-1556009086-87ec124b7c8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      src: "https://www.shutterstock.com/image-photo/set-musical-instruments-during-concert-600nw-214194844.jpg",
       title: "Live Music Stage",
       description: "Intimate stage for live performances and events",
     },
     {
       id: 6,
-      src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      src: "https://st.hzcdn.com/simgs/pictures/kitchens/contemporary-kitchen-modern-house-architects-img~33014f740d50d81b_14-5192-1-5e439f1.jpg",
       title: "Gourmet Kitchen",
       description: "Professional kitchen serving exquisite cuisine",
     },
@@ -184,10 +184,10 @@ export const About = () => {
               <div className="w-full relative">
                 <img
                   src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80"
-                  alt="Our bar interior"
-                  className="rounded-2xl shadow-2xl"
+                  alt=""
+                  className="rounded-2xl w-full shadow-2xl"
                 />
-                <div className="absolute -bottom-6 -left-6 bg-blue-600 text-white p-6 rounded-2xl shadow-xl">
+                <div className="absolute -bottom-6 -left-3 bg-blue-600 text-white p-6 rounded-2xl shadow-xl">
                   <div className="text-3xl font-bold">14+</div>
                   <div className="text-sm">Years of Excellence</div>
                 </div>

@@ -22,7 +22,7 @@ import {
   Image as ImageIcon
 } from '@mui/icons-material';
 
-export const Products = () => {
+export const CoffeeMenu = () => {
   const [activeCategory, setActiveCategory] = useState('drinks');
   const [activeSubCategory, setActiveSubCategory] = useState('beers');
   const [cart, setCart] = useState([]);
@@ -389,28 +389,28 @@ export const Products = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-black bg-opacity-90 backdrop-blur-lg sticky top-0 z-50 shadow-lg"
       >
-        <div className="container mx-auto px-2 xs:px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex justify-between items-center mb-3 sm:mb-4">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden mr-2 xs:mr-3 p-1 xs:p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
+                className="lg:hidden mr-3 p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
               >
-                <MenuIcon className="text-sm xs:text-base" />
+                <MenuIcon />
               </button>
               <div>
-                <h1 className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">VISTA BAR & RESTO</h1>
-                <p className="text-gray-400 text-xs xs:text-sm">Premium Dining Experience</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-amber-400">VISTA BAR & RESTO</h1>
+                <p className="text-gray-400 text-xs sm:text-sm">Premium Dining Experience</p>
               </div>
             </div>
             
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 p-1 xs:p-2 sm:p-3 rounded-full transition-all shadow-lg hover:shadow-amber-500/25"
+              className="relative bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 p-2 sm:p-3 rounded-full transition-all shadow-lg hover:shadow-amber-500/25"
             >
-              <ShoppingCart className="text-base xs:text-lg sm:text-xl" />
+              <ShoppingCart className="text-lg sm:text-xl" />
               {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-t from-red-500 to-red-600 text-white rounded-full w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-xs flex items-center justify-center shadow-lg">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-t from-red-500 to-red-600 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 text-xs flex items-center justify-center shadow-lg">
                   {cart.length}
                 </span>
               )}
@@ -424,21 +424,21 @@ export const Products = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="lg:hidden bg-gray-800 rounded-lg p-3 xs:p-4 mb-3 xs:mb-4"
+                className="lg:hidden bg-gray-800 rounded-lg p-4 mb-4"
               >
-                <div className="grid grid-cols-2 gap-2 xs:gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {Object.keys(menuData).map((category) => (
                     <button
                       key={category}
                       onClick={() => handleCategoryChange(category)}
-                      className={`px-2 xs:px-3 py-2 rounded-lg text-xs xs:text-sm transition-all shadow-lg ${
+                      className={`px-3 py-2 rounded-lg text-sm transition-all shadow-lg ${
                         activeCategory === category
                           ? 'bg-gradient-to-t from-amber-600 to-amber-700 text-white'
                           : 'bg-gradient-to-t from-gray-700 to-gray-800 text-gray-300 hover:from-gray-600 hover:to-gray-700'
                       }`}
                     >
                       <div className="flex items-center justify-center">
-                        {React.cloneElement(menuData[category].icon, { className: "text-xs xs:text-sm mr-1 xs:mr-2" })}
+                        {menuData[category].icon}
                         <span className="ml-1">{menuData[category].title}</span>
                       </div>
                     </button>
@@ -455,7 +455,7 @@ export const Products = () => {
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`px-3 xs:px-4 py-2 xs:py-3 rounded-lg whitespace-nowrap transition-all shadow-lg ${
+                  className={`px-4 py-3 rounded-lg whitespace-nowrap transition-all shadow-lg ${
                     activeCategory === category
                       ? 'bg-gradient-to-t from-amber-600 to-amber-700 text-white'
                       : 'bg-gradient-to-t from-gray-800 to-gray-900 text-gray-300 hover:from-gray-700 hover:to-gray-800'
@@ -463,7 +463,7 @@ export const Products = () => {
                 >
                   <div className="flex items-center">
                     {menuData[category].icon}
-                    <span className="ml-1 xs:ml-2 text-sm xs:text-base">{menuData[category].title}</span>
+                    <span className="ml-2">{menuData[category].title}</span>
                   </div>
                 </button>
               ))}
@@ -477,12 +477,12 @@ export const Products = () => {
               animate={{ opacity: 1, height: 'auto' }}
               className="mt-2"
             >
-              <div className="flex space-x-1 xs:space-x-2 overflow-x-auto pb-2">
+              <div className="flex space-x-2 overflow-x-auto pb-2">
                 {Object.keys(menuData.drinks.subCategories).map((subCategory) => (
                   <button
                     key={subCategory}
                     onClick={() => setActiveSubCategory(subCategory)}
-                    className={`px-2 xs:px-3 py-1 xs:py-2 rounded-lg text-xs xs:text-sm whitespace-nowrap transition-all shadow-lg ${
+                    className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all shadow-lg ${
                       activeSubCategory === subCategory
                         ? 'bg-gradient-to-t from-amber-500 to-amber-600 text-white'
                         : 'bg-gradient-to-t from-gray-700 to-gray-800 text-gray-300 hover:from-gray-600 hover:to-gray-700'
@@ -500,12 +500,12 @@ export const Products = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-2"
                 >
-                  <div className="flex space-x-1 xs:space-x-2 overflow-x-auto pb-2">
+                  <div className="flex space-x-2 overflow-x-auto pb-2">
                     {Object.keys(menuData.drinks.subCategories.beers.subSubCategories).map((beerSubCategory) => (
                       <button
                         key={beerSubCategory}
                         onClick={() => setActiveBeerSubCategory(beerSubCategory)}
-                        className={`px-2 xs:px-3 py-1 xs:py-2 rounded-lg text-xs whitespace-nowrap transition-all shadow-lg ${
+                        className={`px-3 py-2 rounded-lg text-xs whitespace-nowrap transition-all shadow-lg ${
                           activeBeerSubCategory === beerSubCategory
                             ? 'bg-gradient-to-t from-amber-400 to-amber-500 text-white'
                             : 'bg-gradient-to-t from-gray-600 to-gray-700 text-gray-300 hover:from-gray-500 hover:to-gray-600'
@@ -523,18 +523,18 @@ export const Products = () => {
       </motion.header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-2 xs:px-3 sm:px-4 py-4 xs:py-6 sm:py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Category Header */}
         <motion.div
           key={`${activeCategory}-${activeSubCategory}-${activeBeerSubCategory}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 xs:mb-6 sm:mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 xs:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center">
               {menuData[activeCategory].icon}
-              <h2 className="text-xl xs:text-2xl sm:text-3xl font-bold text-amber-400">
+              <h2 className="text-2xl sm:text-3xl font-bold text-amber-400">
                 {activeCategory === 'drinks' 
                   ? activeSubCategory === 'beers'
                     ? menuData.drinks.subCategories.beers.subSubCategories[activeBeerSubCategory].title
@@ -550,19 +550,19 @@ export const Products = () => {
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="p-1 xs:p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
+                  className="p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
                 >
-                  <ArrowBack className="text-sm xs:text-base" />
+                  <ArrowBack />
                 </button>
-                <span className="text-xs xs:text-sm text-gray-300">
+                <span className="text-sm text-gray-300">
                   Page {currentPage} of {totalPages()}
                 </span>
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages(), prev + 1))}
                   disabled={currentPage === totalPages()}
-                  className="p-1 xs:p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
+                  className="p-2 rounded-lg bg-gradient-to-t from-gray-700 to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-700 shadow-lg transition-all"
                 >
-                  <ArrowForward className="text-sm xs:text-base" />
+                  <ArrowForward />
                 </button>
               </div>
             )}
@@ -575,7 +575,7 @@ export const Products = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2 xs:gap-3 sm:gap-4"
+          className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4"
         >
           {getCurrentItems().map((item, index) => (
             <motion.div
@@ -583,41 +583,41 @@ export const Products = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg xs:rounded-xl p-2 xs:p-3 sm:p-4 hover:from-gray-700 hover:to-gray-800 transition-all duration-300 border border-gray-700 hover:border-amber-500 cursor-pointer shadow-lg hover:shadow-xl hover:shadow-amber-500/10 group"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-3 sm:p-4 hover:from-gray-700 hover:to-gray-800 transition-all duration-300 border border-gray-700 hover:border-amber-500 cursor-pointer shadow-lg hover:shadow-xl hover:shadow-amber-500/10 group"
               onClick={() => handleAddToCart(item)}
             >
               {/* Item Image */}
-              <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 lg:h-40 mb-2 xs:mb-3 rounded-lg overflow-hidden bg-gray-700">
+              <div className="relative h-32 sm:h-40 mb-3 rounded-lg overflow-hidden bg-gray-700">
                 <img
                   src={item.image}
-                  alt=''
+                  alt={item.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   onError={handleImageError}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute top-1 xs:top-2 right-1 xs:right-2 bg-black/50 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ImageIcon className="text-white text-xs xs:text-sm" />
+                <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ImageIcon className="text-white text-sm" />
                 </div>
               </div>
 
-              <h3 className={`text-sm xs:text-base sm:text-lg font-bold mb-1 xs:mb-2 ${
+              <h3 className={`text-base sm:text-lg font-bold mb-2 ${
                 item.type === 'custom' ? 'text-amber-300' : 'text-white'
               }`}>
                 {item.name}
               </h3>
 
               {item.description && (
-                <p className="text-gray-400 text-xs xs:text-sm mb-2 xs:mb-3 italic line-clamp-2">
+                <p className="text-gray-400 text-xs sm:text-sm mb-3 italic line-clamp-2">
                   {item.description}
                 </p>
               )}
 
               <div className="flex justify-between items-center">
-                <span className="text-amber-400 font-bold text-xs xs:text-sm sm:text-lg">
+                <span className="text-amber-400 font-bold text-sm sm:text-lg">
                   {formatPrice(item.price)}
                 </span>
-                <button className="bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 p-1 xs:p-2 rounded-full transition-all shadow-lg hover:shadow-amber-500/25">
-                  <Add className="text-xs xs:text-sm sm:text-base" />
+                <button className="bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 p-1 sm:p-2 rounded-full transition-all shadow-lg hover:shadow-amber-500/25">
+                  <Add className="text-sm sm:text-base" />
                 </button>
               </div>
             </motion.div>
@@ -629,9 +629,9 @@ export const Products = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-8 xs:py-12"
+            className="text-center py-12"
           >
-            <p className="text-gray-400 text-base xs:text-lg sm:text-xl">No items found in this category</p>
+            <p className="text-gray-400 text-lg sm:text-xl">No items found in this category</p>
           </motion.div>
         )}
       </main>
@@ -644,89 +644,89 @@ export const Products = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
               onClick={() => setIsCartOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto border border-gray-700 shadow-2xl"
+                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-4 sm:p-6 w-full max-w-md mx-auto border border-gray-700 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex justify-between items-center mb-3 xs:mb-4">
-                  <h3 className="text-base xs:text-lg sm:text-xl font-bold text-amber-400">Add to Cart</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-amber-400">Add to Cart</h3>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="text-gray-400 hover:text-white bg-gradient-to-t from-red-700 to-red-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
+                    className="text-gray-400 hover:text-white bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
                   >
-                    <Close className="text-sm xs:text-base" />
+                    <Close />
                   </button>
                 </div>
 
                 {/* Item Image in Modal */}
-                <div className="relative h-36 xs:h-40 sm:h-48 mb-3 xs:mb-4 rounded-lg xs:rounded-xl overflow-hidden bg-gray-700">
+                <div className="relative h-48 mb-4 rounded-xl overflow-hidden bg-gray-700">
                   <img
                     src={selectedItem.image}
-                    alt=''
+                    alt={selectedItem.name}
                     className="w-full h-full object-cover"
                     onError={handleImageError}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-2 xs:bottom-3 sm:bottom-4 left-2 xs:left-3 sm:left-4">
-                    <h4 className="text-lg xs:text-xl font-bold text-white">{selectedItem.name}</h4>
+                  <div className="absolute bottom-4 left-4">
+                    <h4 className="text-xl font-bold text-white">{selectedItem.name}</h4>
                     {selectedItem.description && (
-                      <p className="text-gray-300 text-xs xs:text-sm">{selectedItem.description}</p>
+                      <p className="text-gray-300 text-sm">{selectedItem.description}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="mb-4 xs:mb-6">
-                  <p className="text-amber-400 font-bold text-base xs:text-lg sm:text-xl mb-3 xs:mb-4 text-center">
+                <div className="mb-6">
+                  <p className="text-amber-400 font-bold text-lg sm:text-xl mb-4 text-center">
                     Price: {formatPrice(selectedItem.price)}
                   </p>
 
-                  <div className="flex items-center justify-between mb-3 xs:mb-4">
-                    <span className="text-gray-300 text-xs xs:text-sm sm:text-base">Quantity:</span>
-                    <div className="flex items-center space-x-2 xs:space-x-3">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-gray-300 text-sm sm:text-base">Quantity:</span>
+                    <div className="flex items-center space-x-3">
                       <button
                         onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                        className="bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 p-1 xs:p-2 sm:p-3 rounded-full shadow-lg transition-all"
+                        className="bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 p-2 sm:p-3 rounded-full shadow-lg transition-all"
                       >
-                        <Remove className="text-xs xs:text-sm" />
+                        <Remove className="text-sm" />
                       </button>
-                      <span className="text-base xs:text-lg sm:text-xl font-bold w-6 xs:w-8 text-center bg-gradient-to-t from-amber-600 to-amber-700 rounded-lg py-1 text-white">
+                      <span className="text-lg sm:text-xl font-bold w-8 text-center bg-gradient-to-t from-amber-600 to-amber-700 rounded-lg py-1 text-white">
                         {quantity}
                       </span>
                       <button
                         onClick={() => setQuantity(prev => prev + 1)}
-                        className="bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 p-1 xs:p-2 sm:p-3 rounded-full shadow-lg transition-all"
+                        className="bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 p-2 sm:p-3 rounded-full shadow-lg transition-all"
                       >
-                        <Add className="text-xs xs:text-sm" />
+                        <Add className="text-sm" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="border-t border-gray-700 pt-3 xs:pt-4">
+                  <div className="border-t border-gray-700 pt-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm xs:text-base sm:text-lg font-semibold">Total:</span>
-                      <span className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">
+                      <span className="text-base sm:text-lg font-semibold">Total:</span>
+                      <span className="text-xl sm:text-2xl font-bold text-amber-400">
                         {formatPrice(selectedItem.price * quantity)}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex space-x-2 xs:space-x-3">
+                <div className="flex space-x-3">
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="flex-1 bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 py-2 xs:py-3 rounded-lg font-semibold text-xs xs:text-sm sm:text-base transition-all shadow-lg"
+                    className="flex-1 bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all shadow-lg"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={confirmAddToCart}
-                    className="flex-1 bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 xs:py-3 rounded-lg font-semibold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
+                    className="flex-1 bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
                   >
                     Add to Cart
                   </button>
@@ -745,33 +745,33 @@ export const Products = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
               onClick={() => setIsConfirmOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto border border-gray-700 shadow-2xl"
+                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-4 sm:p-6 w-full max-w-md mx-auto border border-gray-700 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex justify-between items-center mb-3 xs:mb-4">
-                  <h3 className="text-base xs:text-lg sm:text-xl font-bold text-amber-400">Confirm Order</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-amber-400">Confirm Order</h3>
                   <button
                     onClick={() => setIsConfirmOpen(false)}
                     className="text-gray-400 hover:text-white bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
                   >
-                    <Close className="text-sm xs:text-base" />
+                    <Close />
                   </button>
                 </div>
 
-                <div className="mb-4 xs:mb-6">
-                  <h4 className="text-sm xs:text-base sm:text-lg font-semibold mb-3 xs:mb-4">Order Summary</h4>
-                  <div className="space-y-2 xs:space-y-3 max-h-32 xs:max-h-48 sm:max-h-60 overflow-y-auto">
+                <div className="mb-6">
+                  <h4 className="text-base sm:text-lg font-semibold mb-4">Order Summary</h4>
+                  <div className="space-y-3 max-h-48 sm:max-h-60 overflow-y-auto">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex justify-between items-center bg-gradient-to-r from-gray-700 to-gray-800 p-2 xs:p-3 rounded-lg border border-gray-600">
-                        <div className="flex items-center space-x-2 xs:space-x-3 flex-1">
-                          <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-lg overflow-hidden bg-gray-600 flex-shrink-0">
+                      <div key={item.id} className="flex justify-between items-center bg-gradient-to-r from-gray-700 to-gray-800 p-3 rounded-lg border border-gray-600">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-600 flex-shrink-0">
                             <img
                               src={item.image}
                               alt={item.name}
@@ -780,39 +780,39 @@ export const Products = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <p className="font-semibold text-xs xs:text-sm sm:text-base">{item.name}</p>
-                            <p className="text-xs xs:text-sm text-gray-400">
+                            <p className="font-semibold text-sm sm:text-base">{item.name}</p>
+                            <p className="text-xs sm:text-sm text-gray-400">
                               {item.quantity} x {formatPrice(item.price)}
                             </p>
                           </div>
                         </div>
-                        <p className="text-amber-400 font-bold text-xs xs:text-sm sm:text-base">
+                        <p className="text-amber-400 font-bold text-sm sm:text-base">
                           {formatPrice(item.totalPrice)}
                         </p>
                       </div>
                     ))}
                   </div>
                   
-                  <div className="border-t border-gray-700 mt-3 xs:mt-4 pt-3 xs:pt-4">
+                  <div className="border-t border-gray-700 mt-4 pt-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-base xs:text-lg sm:text-xl font-bold">Total Amount:</span>
-                      <span className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">
+                      <span className="text-lg sm:text-xl font-bold">Total Amount:</span>
+                      <span className="text-xl sm:text-2xl font-bold text-amber-400">
                         {formatPrice(getTotalPrice())}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex space-x-2 xs:space-x-3">
+                <div className="flex space-x-3">
                   <button
                     onClick={() => setIsConfirmOpen(false)}
-                    className="flex-1 bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 py-2 xs:py-3 rounded-lg font-semibold text-xs xs:text-sm sm:text-base transition-all shadow-lg"
+                    className="flex-1 bg-gradient-to-t from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all shadow-lg"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={confirmOrder}
-                    className="flex-1 bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 xs:py-3 rounded-lg font-semibold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
+                    className="flex-1 bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
                   >
                     Confirm Order
                   </button>
@@ -831,77 +831,77 @@ export const Products = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
               onClick={() => setIsCustomerInfoOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto border border-gray-700 shadow-2xl"
+                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-4 sm:p-6 w-full max-w-md mx-auto border border-gray-700 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex justify-between items-center mb-4 xs:mb-6">
-                  <h3 className="text-base xs:text-lg sm:text-xl font-bold text-amber-400">Customer Information</h3>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-amber-400">Customer Information</h3>
                   <button
                     onClick={() => setIsCustomerInfoOpen(false)}
-                    className="text-gray-400 hover:text-white bg-gradient-to-t from-red-700 to-red-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
+                    className="text-gray-400 hover:text-white bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
                   >
-                    <Close className="text-sm xs:text-base" />
+                    <Close />
                   </button>
                 </div>
 
-                <div className="space-y-3 xs:space-y-4 text-black mb-4 xs:mb-6">
+                <div className="space-y-4 mb-6">
                   <div>
-                    <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
-                      <Person className="mr-1 xs:mr-2 text-xs xs:text-sm" />
+                    <label className="flex items-center text-gray-300 text-sm sm:text-base mb-2">
+                      <Person className="mr-2 text-sm" />
                       Full Name *
                     </label>
                     <input
                       type="text"
                       value={customerInfo.name}
                       onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-2 xs:px-3 sm:px-4 py-1 xs:py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-xs xs:text-sm sm:text-base transition-all"
+                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-sm sm:text-base transition-all"
                       placeholder="Enter your full name"
                     />
                   </div>
 
                   <div>
-                    <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
-                      <Phone className="mr-1 xs:mr-2 text-xs xs:text-sm" />
+                    <label className="flex items-center text-gray-300 text-sm sm:text-base mb-2">
+                      <Phone className="mr-2 text-sm" />
                       Phone Number *
                     </label>
                     <input
                       type="tel"
                       value={customerInfo.phone}
                       onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
-                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-2 xs:px-3 sm:px-4 py-1 xs:py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-xs xs:text-sm sm:text-base transition-all"
+                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-sm sm:text-base transition-all"
                       placeholder="Enter your phone number"
                     />
                   </div>
 
                   <div>
-                    <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
+                    <label className="flex items-center text-gray-300 text-sm sm:text-base mb-2">
                       Customer Number
                     </label>
                     <input
                       type="text"
                       value={customerInfo.customerNumber}
                       onChange={(e) => setCustomerInfo({...customerInfo, customerNumber: e.target.value})}
-                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-2 xs:px-3 sm:px-4 py-1 xs:py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-xs xs:text-sm sm:text-base transition-all"
+                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-sm sm:text-base transition-all"
                       placeholder="Optional customer number"
                     />
                   </div>
 
                   <div>
-                    <label className="flex items-center text-gray-300 text-xs xs:text-sm sm:text-base mb-1 xs:mb-2">
-                      <LocationOn className="mr-1 xs:mr-2 text-xs xs:text-sm" />
+                    <label className="flex items-center text-gray-300 text-sm sm:text-base mb-2">
+                      <LocationOn className="mr-2 text-sm" />
                       Location
                     </label>
                     <select
                       value={customerInfo.location}
                       onChange={(e) => setCustomerInfo({...customerInfo, location: e.target.value})}
-                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-2 xs:px-3 sm:px-4 py-1 xs:py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-xs xs:text-sm sm:text-base transition-all"
+                      className="w-full bg-gradient-to-t from-gray-700 to-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white focus:outline-none focus:border-amber-500 text-sm sm:text-base transition-all"
                     >
                       <option value="onsite">Onsite</option>
                       <option value="delivery">Delivery</option>
@@ -910,10 +910,10 @@ export const Products = () => {
                   </div>
                 </div>
 
-                <div className="border-t border-gray-700 pt-3 xs:pt-4 mb-4 xs:mb-6">
+                <div className="border-t border-gray-700 pt-4 mb-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm xs:text-base sm:text-lg font-bold">Total Amount:</span>
-                    <span className="text-base xs:text-lg sm:text-xl font-bold text-amber-400">
+                    <span className="text-base sm:text-lg font-bold">Total Amount:</span>
+                    <span className="text-lg sm:text-xl font-bold text-amber-400">
                       {formatPrice(getTotalPrice())}
                     </span>
                   </div>
@@ -921,7 +921,7 @@ export const Products = () => {
 
                 <button
                   onClick={submitOrder}
-                  className="w-full bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
+                  className="w-full bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 sm:py-3 rounded-lg font-bold text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
                 >
                   Submit Order
                 </button>
@@ -938,50 +938,50 @@ export const Products = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl xs:rounded-2xl p-4 xs:p-6 sm:p-8 w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto border border-gray-700 shadow-2xl text-center"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 sm:p-8 w-full max-w-md mx-auto border border-gray-700 shadow-2xl text-center"
             >
               {checkoutStatus === 'loading' ? (
                 <>
-                  <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 bg-gradient-to-t from-amber-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4">
-                    <div className="animate-spin rounded-full h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 border-b-2 border-white"></div>
+                  <div className="w-16 h-16 bg-gradient-to-t from-amber-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                   </div>
-                  <h3 className="text-xl xs:text-2xl font-bold text-amber-400 mb-1 xs:mb-2">Processing Order</h3>
-                  <p className="text-gray-300 text-xs xs:text-sm mb-4 xs:mb-6">Please wait while we process your order...</p>
+                  <h3 className="text-2xl font-bold text-amber-400 mb-2">Processing Order</h3>
+                  <p className="text-gray-300 mb-6">Please wait while we process your order...</p>
                 </>
               ) : checkoutStatus === 'success' ? (
                 <>
-                  <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 bg-gradient-to-t from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4">
-                    <svg className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 bg-gradient-to-t from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-xl xs:text-2xl font-bold text-green-400 mb-1 xs:mb-2">Order Successful!</h3>
-                  <p className="text-gray-300 text-xs xs:text-sm mb-4 xs:mb-6">Your order has been placed successfully.</p>
+                  <h3 className="text-2xl font-bold text-green-400 mb-2">Order Successful!</h3>
+                  <p className="text-gray-300 mb-6">Your order has been placed successfully.</p>
                   <button
                     onClick={() => setCheckoutStatus(null)}
-                    className="w-full bg-gradient-to-t from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg"
+                    className="w-full bg-gradient-to-t from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 py-3 rounded-lg font-bold transition-all shadow-lg"
                   >
                     Continue Shopping
                   </button>
                 </>
               ) : (
                 <>
-                  <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 bg-gradient-to-t from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4">
-                    <svg className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 bg-gradient-to-t from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <h3 className="text-xl xs:text-2xl font-bold text-red-400 mb-1 xs:mb-2">Order Failed</h3>
-                  <p className="text-gray-300 text-xs xs:text-sm mb-4 xs:mb-6">There was an error processing your order. Please try again.</p>
+                  <h3 className="text-2xl font-bold text-red-400 mb-2">Order Failed</h3>
+                  <p className="text-gray-300 mb-6">There was an error processing your order. Please try again.</p>
                   <button
                     onClick={() => setCheckoutStatus(null)}
-                    className="w-full bg-gradient-to-t from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg"
+                    className="w-full bg-gradient-to-t from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-3 rounded-lg font-bold transition-all shadow-lg"
                   >
                     Try Again
                   </button>
@@ -1009,34 +1009,34 @@ export const Products = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30 }}
-              className="fixed right-0 top-0 h-full w-full xs:w-80 sm:w-96 bg-gradient-to-b from-gray-900 to-gray-800 z-50 shadow-2xl border-l border-gray-700"
+              className="fixed right-0 top-0 h-full w-full sm:w-96 bg-gradient-to-b from-gray-900 to-gray-800 z-50 shadow-2xl border-l border-gray-700"
             >
-              <div className="p-3 xs:p-4 sm:p-6 h-full flex flex-col">
-                <div className="flex justify-between items-center mb-4 xs:mb-6">
-                  <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">Your Cart</h2>
+              <div className="p-4 sm:p-6 h-full flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-amber-400">Your Cart</h2>
                   <button
                     onClick={() => setIsCartOpen(false)}
                     className="text-gray-400 hover:text-white bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
                   >
-                    <Close className="text-sm xs:text-base" />
+                    <Close />
                   </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
                   {cart.length === 0 ? (
-                    <div className="text-center mt-6 xs:mt-8">
-                      <div className="w-16 h-16 xs:w-20 xs:h-20 bg-gradient-to-t from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4">
-                        <ShoppingCart className="text-2xl xs:text-3xl text-gray-400" />
+                    <div className="text-center mt-8">
+                      <div className="w-20 h-20 bg-gradient-to-t from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <ShoppingCart className="text-3xl text-gray-400" />
                       </div>
-                      <p className="text-gray-400 text-sm xs:text-base">Your cart is empty</p>
+                      <p className="text-gray-400">Your cart is empty</p>
                     </div>
                   ) : (
-                    <div className="space-y-3 xs:space-y-4">
+                    <div className="space-y-4">
                       {cart.map((item) => (
-                        <div key={item.id} className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-2 xs:p-3 sm:p-4 border border-gray-700">
-                          <div className="flex justify-between items-start mb-1 xs:mb-2">
-                            <div className="flex items-center space-x-2 xs:space-x-3 flex-1">
-                              <div className="w-10 h-10 xs:w-12 xs:h-12 rounded-lg overflow-hidden bg-gray-700 flex-shrink-0">
+                        <div key={item.id} className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-3 sm:p-4 border border-gray-700">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex items-center space-x-3 flex-1">
+                              <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 flex-shrink-0">
                                 <img
                                   src={item.image}
                                   alt={item.name}
@@ -1045,8 +1045,8 @@ export const Products = () => {
                                 />
                               </div>
                               <div className="flex-1">
-                                <h4 className="font-semibold text-xs xs:text-sm sm:text-base">{item.name}</h4>
-                                <p className="text-xs xs:text-sm text-gray-400">
+                                <h4 className="font-semibold text-sm sm:text-base">{item.name}</h4>
+                                <p className="text-xs sm:text-sm text-gray-400">
                                   Qty: {item.quantity} × {formatPrice(item.price)}
                                 </p>
                                 {item.description && (
@@ -1056,13 +1056,13 @@ export const Products = () => {
                             </div>
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="text-red-400 hover:text-red-300 ml-1 xs:ml-2 bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
+                              className="text-red-400 hover:text-red-300 ml-2 bg-gradient-to-t from-gray-700 to-gray-800 p-1 rounded-full hover:from-gray-600 hover:to-gray-700 transition-all"
                             >
-                              <Remove className="text-xs xs:text-sm" />
+                              <Remove className="text-sm" />
                             </button>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-amber-400 font-bold text-xs xs:text-sm sm:text-base">
+                            <span className="text-amber-400 font-bold text-sm sm:text-base">
                               {formatPrice(item.totalPrice)}
                             </span>
                           </div>
@@ -1073,16 +1073,16 @@ export const Products = () => {
                 </div>
 
                 {cart.length > 0 && (
-                  <div className="border-t border-gray-700 pt-3 xs:pt-4">
-                    <div className="flex justify-between items-center mb-3 xs:mb-4">
-                      <span className="text-base xs:text-lg sm:text-xl font-bold">Total:</span>
-                      <span className="text-lg xs:text-xl sm:text-2xl font-bold text-amber-400">
+                  <div className="border-t border-gray-700 pt-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-lg sm:text-xl font-bold">Total:</span>
+                      <span className="text-xl sm:text-2xl font-bold text-amber-400">
                         {formatPrice(getTotalPrice())}
                       </span>
                     </div>
                     <button
                       onClick={handleCheckout}
-                      className="w-full bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
+                      className="w-full bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 sm:py-3 rounded-lg font-bold text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
                     >
                       Checkout
                     </button>
