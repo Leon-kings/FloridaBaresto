@@ -9,6 +9,12 @@ import { DashboardPage } from "./dashboard/admin/Dashboard";
 import { About } from "./pages/about/About";
 import { Services } from "./pages/services/Services";
 import { Products } from "./pages/products/Products";
+import { UndefinedPage } from "./components/notfound/Notfound";
+import { UserDashboard } from "./dashboard/user/UserDashboard";
+import { UserManagement } from "./dashboard/admin/components/management/UserManagement";
+import { TestimonyManagement } from "./dashboard/admin/components/management/TestimonyManagement";
+import { SubscriptionManagement } from "./dashboard/admin/components/management/SubscriptionManagement";
+import { ProductsManagement } from "./dashboard/admin/components/management/ProductsManagement";
 // BackToTop component with Tailwind
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -58,11 +64,20 @@ export default function App() {
         <Navbar />
         <div>
           <Routes>
+            <Route path="*" element={<UndefinedPage />} />
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/services" element={<Services />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/user-dashboard" element={<UserDashboard />} />
+            <Route path="/user/management" element={<UserManagement />} />
+            <Route path="/user/testimony" element={<TestimonyManagement />} />
+            <Route
+              path="/user/subscription"
+              element={<SubscriptionManagement />}
+            />
+            <Route path="/user/products" element={<ProductsManagement />} />
           </Routes>
         </div>
         <BackToTop />

@@ -133,7 +133,7 @@ export const Hero = () => {
 
   return (
     <>
-      <section className="w-full relative text-black h-screen overflow-hidden">
+      <section className="w-full mt-2 rounded-2xl mb-1 relative text-black h-screen overflow-hidden">
         {/* Background Slides */}
         <div className="relative h-full w-full">
           <AnimatePresence mode="wait">
