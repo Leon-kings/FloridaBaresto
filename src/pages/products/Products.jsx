@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import {
   LocalBar,
   LocalCafe,
@@ -962,6 +963,18 @@ export const Products = () => {
     }, 300);
   };
 
+  // Function to send order data to API - UPDATED to match Mongoose schema
+  const sendOrderToAPI = async (orderData) => {
+    try {
+      const response = await axios.post('https://floridabarnode.onrender.com/orders', orderData);
+      console.log('Order submitted successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error sending order to API:', error);
+      throw error;
+    }
+  };
+
   const submitOrder = async () => {
     if (!customerInfo.name || !customerInfo.phone) {
       toast.error("Please fill in name and phone number", {
@@ -975,39 +988,96 @@ export const Products = () => {
       setCheckoutStatus("loading");
       setIsCustomerInfoOpen(false);
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Prepare order data according to Mongoose schema
+      const orderData = {
+        orderDetails: {
+          orderId: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: new Date(),
+          totalAmount: getTotalPrice(),
+          status: "pending",
+          paymentMethod: "mobile_money",
+          paymentStatus: "pending"
+        },
+        customerInfo: {
+          name: customerInfo.name,
+          phone: customerInfo.phone,
+          location: customerInfo.location,
+          email: "", // Optional field
+          notes: "" // Optional field
+        },
+        cartItems: cart.map(item => ({
+          id: item.id.split('-')[0], // Remove the timestamp part
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+          description: item.description || "",
+          type: mapItemType(item.type),
+          image: item.image || "",
+          customizations: {} // Empty Map for customizations
+        })),
+        summary: {
+          subtotal: getTotalPrice(),
+          tax: 0,
+          serviceCharge: 0,
+          deliveryFee: customerInfo.location === "delivery" ? 2000 : 0,
+          discount: 0,
+          total: getTotalPrice() + (customerInfo.location === "delivery" ? 2000 : 0),
+          itemCount: cart.length
+        },
+        deliveryInfo: customerInfo.location === "delivery" ? {
+          deliveryTime: null,
+          estimatedDelivery: new Date(Date.now() + 45 * 60000), // 45 minutes from now
+          deliveryAddress: customerInfo.location,
+          deliveryInstructions: ""
+        } : {
+          deliveryTime: null,
+          estimatedDelivery: null,
+          deliveryAddress: "",
+          deliveryInstructions: ""
+        },
+        // System fields will be handled by the backend
+        createdBy: null,
+        assignedTo: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
 
-      // Simulate successful order
-      const success = Math.random() > 0.2;
+      console.log('Submitting order data:', orderData);
 
-      if (success) {
-        setCheckoutStatus("success");
-        toast.success("Order placed successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+      // Send data to API
+      await sendOrderToAPI(orderData);
 
-        // Close loading modal and open order info modal
-        setTimeout(() => {
-          setCheckoutStatus(null);
-          setIsOrderInfoModalOpen(true);
-        }, 1000);
-        
-      } else {
-        setCheckoutStatus("error");
-        toast.error("Failed to place order. Please try again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      }
+      setCheckoutStatus("success");
+      toast.success("Order submitted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      // Close loading modal and open order info modal
+      setTimeout(() => {
+        setCheckoutStatus(null);
+        setIsOrderInfoModalOpen(true);
+      }, 1000);
+      
     } catch (error) {
       setCheckoutStatus("error");
-      toast.error("Network error. Please check your connection.", {
+      console.error('Order submission error:', error);
+      toast.error("Failed to submit order. Please try again.", {
         position: "top-right",
         autoClose: 3000,
       });
     }
+  };
+
+  // Helper function to map item types to schema enum values
+  const mapItemType = (type) => {
+    const typeMap = {
+      'bottle': 'drink',
+      'single': 'food',
+      'custom': 'other'
+    };
+    return typeMap[type] || 'food';
   };
 
   const proceedToPayment = () => {
@@ -1017,24 +1087,87 @@ export const Products = () => {
     }, 300);
   };
 
-  const completePayment = () => {
-    setIsPaymentModalOpen(false);
-    
-    // Reset everything after payment completion
-    setTimeout(() => {
-      setCart([]);
-      setCustomerInfo({
-        name: "",
-        phone: "",
-        location: "onsite",
-      });
-      setCheckoutStatus(null);
+  const completePayment = async () => {
+    try {
+      setCheckoutStatus("loading");
+      setIsPaymentModalOpen(false);
+
+      // Prepare updated order data with payment completion
+      const orderData = {
+        orderDetails: {
+          orderId: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: new Date(),
+          totalAmount: getTotalPrice(),
+          status: "completed",
+          paymentMethod: "mobile_money",
+          paymentStatus: "completed"
+        },
+        customerInfo: {
+          name: customerInfo.name,
+          phone: customerInfo.phone,
+          location: customerInfo.location,
+          email: "",
+          notes: ""
+        },
+        cartItems: cart.map(item => ({
+          id: item.id.split('-')[0],
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+          description: item.description || "",
+          type: mapItemType(item.type),
+          image: item.image || "",
+          customizations: {}
+        })),
+        summary: {
+          subtotal: getTotalPrice(),
+          tax: 0,
+          serviceCharge: 0,
+          deliveryFee: customerInfo.location === "delivery" ? 2000 : 0,
+          discount: 0,
+          total: getTotalPrice() + (customerInfo.location === "delivery" ? 2000 : 0),
+          itemCount: cart.length
+        },
+        deliveryInfo: customerInfo.location === "delivery" ? {
+          deliveryTime: null,
+          estimatedDelivery: new Date(Date.now() + 45 * 60000),
+          deliveryAddress: customerInfo.location,
+          deliveryInstructions: ""
+        } : undefined
+      };
+
+      console.log('Completing payment with order data:', orderData);
+
+      // Send final order data to API
+      await sendOrderToAPI(orderData);
+
+      setCheckoutStatus("success");
       
-      toast.success("Payment completed! Your order is being processed.", {
+      // Reset everything after successful API call
+      setTimeout(() => {
+        setCart([]);
+        setCustomerInfo({
+          name: "",
+          phone: "",
+          location: "onsite",
+        });
+        setCheckoutStatus(null);
+        
+        toast.success("Payment completed! Your order has been submitted.", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+      }, 1000);
+
+    } catch (error) {
+      setCheckoutStatus("error");
+      console.error('Payment completion error:', error);
+      toast.error("Failed to complete payment. Please try again.", {
         position: "top-right",
-        autoClose: 4000,
+        autoClose: 3000,
       });
-    }, 500);
+    }
   };
 
   const formatPrice = (price) => {
@@ -1997,7 +2130,7 @@ export const Products = () => {
                         <p className="text-gray-400 text-sm xs:text-base">
                           Your cart is empty
                         </p>
-                      </div>
+                    </div>
                     ) : (
                       <div className="space-y-3 xs:space-y-4">
                         {cart.map((item) => (

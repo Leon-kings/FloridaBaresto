@@ -21,6 +21,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import logo from '../../assets/images/ChatGPT Image Oct 4, 2025, 03_47_28 AM.png'
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +30,8 @@ export const Navbar = () => {
   const [activeForm, setActiveForm] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, login, logout, isAuthenticated, isAdmin, isUser } = useAuth();
+  const { user, login, logout, isAuthenticated, isAdmin, isUser, isManager } =
+    useAuth();
   const navigate = useNavigate();
 
   // Navigation links object
@@ -117,41 +119,80 @@ export const Navbar = () => {
     });
   };
 
-  const handleLoginSubmit = async (e) => {
+const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!loginData.email || !loginData.password) {
+      toast.error('❌ Please fill in all fields!', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Mock API call - replace with your actual API endpoint
-      const mockResponse = {
-        data: {
-          token: "mock-jwt-token-12345",
-          user: {
-            id: 1,
-            name: loginData.email.split("@")[0],
-            email: loginData.email,
-            role: loginData.email.includes("admin") ? "admin" : "user",
-          },
+      const API_URL = "https://floridabarnode.onrender.com/users/login";
+
+      const response = await axios.post(
+        API_URL,
+        {
+          email: loginData.email,
+          password: loginData.password,
         },
-      };
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 10000,
+        }
+      );
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log('API Response:', response.data); // Debug log
 
-      const userData = mockResponse.data.user;
-      login(userData, mockResponse.data.token);
+      // CORRECTED: Extract from nested structure
+      const { token, data } = response.data;
+      const user = data.user;
+
+      // Store token and user data
+      login(user, token);
 
       toast.success("🎉 Login successful! Welcome back!", {
         position: "top-right",
         autoClose: 3000,
       });
 
-      closeModals();
+      if (closeModals) {
+        closeModals();
+      }
 
       // Navigate to appropriate dashboard
-      navigateToDashboard(userData.role);
+      navigateToDashboard(user.status);
+
     } catch (error) {
-      toast.error("❌ Login failed! Please check your credentials.", {
+      let errorMessage = "❌ Login failed! Please check your credentials.";
+
+      // Handle different types of errors
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 401) {
+          errorMessage = "❌ Invalid email or password!";
+        } else if (status === 404) {
+          errorMessage = "❌ Service unavailable. Please try again later.";
+        } else if (status >= 500) {
+          errorMessage = "❌ Server error. Please try again later.";
+        } else if (error.response.data?.message) {
+          errorMessage = `❌ ${error.response.data.message}`;
+        }
+      } else if (error.request) {
+        errorMessage = "❌ Network error. Please check your connection.";
+      } else {
+        errorMessage = `❌ Login failed: ${error.message}`;
+      }
+
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 4000,
       });
@@ -161,88 +202,210 @@ export const Navbar = () => {
     }
   };
 
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
+const handleRegisterSubmit = async (e) => {
+  e.preventDefault();
 
-    if (registerData.password !== registerData.confirmPassword) {
-      toast.error("🔒 Passwords do not match!", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
+  // Debug: Log current state before validation
+  console.log('Current form data:', registerData);
+  console.log('Password comparison:', {
+    password: registerData.password,
+    confirmPassword: registerData.confirmPassword,
+    match: registerData.password === registerData.confirmPassword
+  });
 
-    if (registerData.password.length < 6) {
-      toast.error("🔒 Password must be at least 6 characters long!", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
+  // Client-side validation - FIXED: Use exact comparison
+  if (registerData.password !== registerData.confirmPassword) {
+    console.log('PASSWORDS DO NOT MATCH:', {
+      password: registerData.password,
+      confirmPassword: registerData.confirmPassword
+    });
+    
+    toast.error("🔒 Passwords do not match!", {
+      position: "top-right",
+      autoClose: 4000,
+    });
+    return;
+  }
 
-    setIsLoading(true);
+  console.log('✅ Passwords match - proceeding with validation');
 
-    try {
-      // Mock API call
-      const mockResponse = {
-        data: {
-          token: "mock-jwt-token-12345",
-          user: {
-            id: Date.now(),
-            name: registerData.name,
-            email: registerData.email,
-            role: "user",
-          },
+  if (registerData.password.length < 6) {
+    toast.error("🔒 Password must be at least 6 characters long!", {
+      position: "top-right",
+      autoClose: 4000,
+    });
+    return;
+  }
+
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(registerData.email)) {
+    toast.error("📧 Please enter a valid email address!", {
+      position: "top-right",
+      autoClose: 4000,
+    });
+    return;
+  }
+
+  // Name validation
+  if (!registerData.name || registerData.name.trim().length < 2) {
+    toast.error("👤 Please enter your full name!", {
+      position: "top-right",
+      autoClose: 4000,
+    });
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const API_URL = "https://floridabarnode.onrender.com/users/register";
+
+    // Send registration data to real API
+    const response = await axios.post(
+      API_URL,
+      {
+        name: registerData.name.trim(),
+        email: registerData.email.toLowerCase().trim(),
+        password: registerData.password,
+        confirmPassword:registerData.confirmPassword
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-      };
+        timeout: 10000,
+      }
+    );
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+    console.log('Registration API response:', response.data);
 
-      const userData = mockResponse.data.user;
-      login(userData, mockResponse.data.token);
+    // FIXED: Handle different possible response structures
+    let token, user;
 
-      toast.success("🎊 Registration successful! Welcome to our community!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-
-      closeModals();
-
-      // Navigate to user dashboard
-      navigateToDashboard("user");
-    } catch (error) {
-      toast.error("❌ Registration failed! Please try again.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      console.error("Registration failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const navigateToDashboard = (role) => {
-    if (role === "admin") {
-      navigate("/dashboard");
+    if (response.data.token && response.data.data?.user) {
+      // Structure: { token, data: { user } }
+      token = response.data.token;
+      user = response.data.data.user;
+    } else if (response.data.token && response.data.user) {
+      // Structure: { token, user }
+      token = response.data.token;
+      user = response.data.user;
     } else {
-      navigate("/user-dashboard");
+      // Fallback structure
+      token = response.data.token;
+      user = response.data.user || response.data;
+    }
+
+    console.log('Extracted token and user:', { token, user });
+
+    // Store token and user data
+    login(user, token);
+
+    toast.success("🎊 Registration successful! Welcome to our community!", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+
+    closeModals();
+
+    // Navigate to appropriate dashboard - FIXED: Use status instead of role
+    navigateToDashboard(user.status || user.role || "user");
+
+  } catch (error) {
+    let errorMessage = "❌ Registration failed! Please try again.";
+
+    // Enhanced error logging
+    console.error("Registration error details:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+
+    if (error.response) {
+      const status = error.response.status;
+      const responseData = error.response.data;
+      
+      if (status === 400) {
+        if (responseData?.errors) {
+          const serverErrors = responseData.errors;
+          if (serverErrors.email) {
+            errorMessage = `❌ ${serverErrors.email[0]}`;
+          } else if (serverErrors.password) {
+            errorMessage = `❌ ${serverErrors.password[0]}`;
+          } else if (serverErrors.name) {
+            errorMessage = `❌ ${serverErrors.name[0]}`;
+          }
+        } else if (responseData?.message) {
+          errorMessage = `❌ ${responseData.message}`;
+        } else {
+          errorMessage = "❌ Invalid registration data. Please check your information.";
+        }
+      } else if (status === 409) {
+        errorMessage = "❌ User already exists with this email!";
+      } else if (status === 422) {
+        errorMessage = "❌ Validation failed. Please check your information.";
+      } else if (status >= 500) {
+        errorMessage = "❌ Server error. Please try again later.";
+      } else if (responseData?.message) {
+        errorMessage = `❌ ${responseData.message}`;
+      }
+    } else if (error.request) {
+      errorMessage = "❌ Network error. Please check your connection.";
+    } else {
+      errorMessage = `❌ Registration failed: ${error.message}`;
+    }
+
+    toast.error(errorMessage, {
+      position: "top-right",
+      autoClose: 5000,
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+  const navigateToDashboard = (status) => {
+    // Convert role to lowercase for case-insensitive comparison
+    const userRole = status?.toLowerCase();
+
+    switch (userRole) {
+      case "admin":
+        navigate("/dashboard");
+        break;
+      case "manager":
+        navigate("/manager-dashboard");
+        break;
+      case "user":
+        navigate("/user/dashboard");
+        break;
+      default:
+        // Fallback for unknown roles or missing role
+        console.warn(
+          `Unknown role: ${status}. Redirecting to default dashboard.`
+        );
+        navigate("/");
+        break;
     }
   };
 
   const handleDashboardClick = () => {
+    // Assuming you have these state variables or get them from context/auth
     if (isAdmin) {
       navigate("/dashboard");
+    } else if (isManager) {
+      navigate("/manager-dashboard");
     } else if (isUser) {
-      navigate("/user-dashboard");
+      navigate("/user/dashboard");
+    } else {
+      // Fallback for unauthenticated or unknown roles
+      navigate("/");
     }
   };
-
   const handleLogout = () => {
     logout();
     toast.info("👋 Logged out successfully!", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 300,
     });
     navigate("/");
     setIsOpen(false);
@@ -286,10 +449,7 @@ export const Navbar = () => {
                 className="flex items-center space-x-3 cursor-pointer"
                 onClick={() => navigate("/")}
               >
-                <LocalDrink className="h-9 w-9 text-blue-600" />
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  FloriPulb
-                </span>
+          <img src={logo} alt="" className='w-20' />
               </motion.div>
             </div>
 
@@ -349,7 +509,7 @@ export const Navbar = () => {
                               {user?.email}
                             </p>
                             <p className="text-xs text-blue-600 font-medium capitalize">
-                              {user?.role}
+                              {user?.status}
                             </p>
                           </div>
 
@@ -437,7 +597,7 @@ export const Navbar = () => {
                                 {user?.email}
                               </p>
                               <p className="text-xs text-blue-600 font-medium capitalize">
-                                {user?.role}
+                                {user?.status}
                               </p>
                             </div>
                           </div>
