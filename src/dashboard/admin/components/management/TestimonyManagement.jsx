@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -17,172 +19,15 @@ import {
   Message as MessageIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
+  CloudUpload as CloudUploadIcon
 } from "@mui/icons-material";
 import { Sidebar } from "../sidebar/Sidebar";
 
 export const TestimonyManagement = () => {
-  // Sample initial data
-  const initialTestimonies = [
-    {
-      id: 1,
-      name: "Robert Martinez",
-      role: "Classic Car Collector",
-      content:
-        "AutoElite's classic car division is phenomenal. They have experts who truly understand vintage vehicles and maintain them to the highest standards.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-15",
-      featured: true,
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      role: "Business Executive",
-      content:
-        "The luxury car service exceeded my expectations. Professional staff and exceptional vehicle maintenance. Highly recommended!",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-14",
-      featured: true,
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      role: "Car Enthusiast",
-      content:
-        "Impressive collection of sports cars. The test drive experience was unforgettable. Will definitely return for my next purchase.",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-13",
-      featured: false,
-    },
-    {
-      id: 4,
-      name: "Emily Williams",
-      role: "Luxury Car Owner",
-      content:
-        "Outstanding customer service. They handled my custom modifications perfectly and delivered ahead of schedule.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-12",
-      featured: true,
-    },
-    {
-      id: 5,
-      name: "David Thompson",
-      role: "Fleet Manager",
-      content:
-        "We've purchased 15 vehicles from AutoElite for our corporate fleet. Reliable service and excellent pricing.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "draft",
-      createdAt: "2024-01-11",
-      featured: false,
-    },
-    {
-      id: 6,
-      name: "Lisa Anderson",
-      role: "First-time Buyer",
-      content:
-        "The team made my first car buying experience smooth and enjoyable. Great guidance throughout the process.",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-10",
-      featured: false,
-    },
-    {
-      id: 7,
-      name: "James Wilson",
-      role: "Performance Car Expert",
-      content:
-        "Their knowledge of high-performance vehicles is unmatched. Found exactly what I was looking for.",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-09",
-      featured: true,
-    },
-    {
-      id: 8,
-      name: "Maria Garcia",
-      role: "Family Car Shopper",
-      content:
-        "Perfect family vehicle with great safety features. The financing options made it affordable for us.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "archived",
-      createdAt: "2024-01-08",
-      featured: false,
-    },
-    {
-      id: 9,
-      name: "Thomas Brown",
-      role: "Car Collector",
-      content:
-        "Added three rare models to my collection through AutoElite. Their sourcing capability is impressive.",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-07",
-      featured: true,
-    },
-    {
-      id: 10,
-      name: "Jennifer Lee",
-      role: "Luxury SUV Owner",
-      content:
-        "Exceptional after-sales service. The maintenance package is comprehensive and reasonably priced.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-06",
-      featured: false,
-    },
-    {
-      id: 11,
-      name: "Christopher Davis",
-      role: "Sports Car Enthusiast",
-      content:
-        "Dream car acquired! The entire process from selection to delivery was handled professionally.",
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "draft",
-      createdAt: "2024-01-05",
-      featured: false,
-    },
-    {
-      id: 12,
-      name: "Amanda White",
-      role: "Electric Vehicle Advocate",
-      content:
-        "Great selection of EVs and knowledgeable staff about charging infrastructure and government incentives.",
-      rating: 4,
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      status: "published",
-      createdAt: "2024-01-04",
-      featured: true,
-    },
-  ];
+  const API_URL = "https://floridabarnode.onrender.com/testimonials";
 
-  const [testimonies, setTestimonies] = useState(initialTestimonies);
+  const [testimonies, setTestimonies] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTestimony, setEditingTestimony] = useState(null);
@@ -193,6 +38,56 @@ export const TestimonyManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch testimonies from API
+  useEffect(() => {
+    fetchTestimonies();
+  }, []);
+
+  const fetchTestimonies = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(API_URL);
+      
+      // Transform API data to match our component structure
+      const transformedData = response.data.map((testimony, index) => ({
+        id: testimony._id || testimony.id || `testimony-${index + 1}`,
+        name: testimony.name || "Unknown User",
+        role: testimony.role || "Customer",
+        content: testimony.content || "No content provided",
+        rating: testimony.rating || 5,
+        image: testimony.image || getDefaultImage(index),
+        status: testimony.status || "published",
+        createdAt: testimony.createdAt ? new Date(testimony.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        featured: testimony.featured || false,
+        email: testimony.email || ""
+      }));
+
+      setTestimonies(transformedData);
+    } catch (error) {
+      console.error("Error fetching testimonies:", error);
+      toast.error("Failed to load testimonies");
+      // Fallback to empty array
+      setTestimonies([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to get default images
+  const getDefaultImage = (index) => {
+    const defaultImages = [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+    ];
+    return defaultImages[index % defaultImages.length];
+  };
 
   // Enhanced Stat Card Component with responsive design
   const StatCard = ({ title, value, icon, color }) => {
@@ -208,21 +103,21 @@ export const TestimonyManagement = () => {
     return (
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 w-full"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:p-4 md:p-6 w-full"
       >
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
             <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
               {title}
             </p>
-            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">
               {value}
             </p>
           </div>
           <div
-            className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${colorClasses[color]} rounded-lg flex items-center justify-center flex-shrink-0 ml-4`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-r ${colorClasses[color]} rounded-lg flex items-center justify-center flex-shrink-0 ml-2 sm:ml-4`}
           >
-            <span className="text-lg sm:text-2xl text-white">{icon}</span>
+            <span className="text-sm sm:text-lg md:text-2xl text-white">{icon}</span>
           </div>
         </div>
       </motion.div>
@@ -237,19 +132,17 @@ export const TestimonyManagement = () => {
     size = "medium",
   }) => {
     const sizeClasses = {
-      small: "text-sm sm:text-lg",
-      medium: "text-lg sm:text-2xl",
-      large: "text-xl sm:text-3xl",
+      small: "text-xs sm:text-sm",
+      medium: "text-sm sm:text-lg md:text-xl",
+      large: "text-lg sm:text-xl md:text-2xl",
     };
 
     return (
-      <div className="flex space-x-1">
+      <div className="flex space-x-0.5 sm:space-x-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <div
             key={star}
-          
             onClick={() => editable && onRatingChange(star)}
-            disabled={!editable}
             className={`${sizeClasses[size]} ${
               editable
                 ? "cursor-pointer hover:scale-110 transition-transform"
@@ -263,7 +156,17 @@ export const TestimonyManagement = () => {
     );
   };
 
-  // Enhanced Testimony Modal Component with responsive design
+  // Function to convert file to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  // Enhanced Testimony Modal Component with image upload
   const TestimonyModal = ({
     isOpen,
     onClose,
@@ -278,11 +181,15 @@ export const TestimonyManagement = () => {
       rating: 5,
       image: "",
       featured: false,
+      email: "",
     });
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
 
     React.useEffect(() => {
       if (initialData) {
         setFormData(initialData);
+        setImagePreview(initialData.image || "");
       } else {
         setFormData({
           name: "",
@@ -291,7 +198,10 @@ export const TestimonyManagement = () => {
           rating: 5,
           image: "",
           featured: false,
+          email: "",
         });
+        setImagePreview("");
+        setImageFile(null);
       }
     }, [initialData, isOpen]);
 
@@ -310,9 +220,79 @@ export const TestimonyManagement = () => {
       }));
     };
 
-    const handleSubmit = (e) => {
+    const handleImageChange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Check if file is an image
+        if (!file.type.startsWith('image/')) {
+          toast.error('Please select an image file');
+          return;
+        }
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error('Image size should be less than 5MB');
+          return;
+        }
+
+        setImageFile(file);
+        
+        // Create preview
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+        
+        // Convert to base64 for submission
+        try {
+          const base64Image = await fileToBase64(file);
+          setFormData(prev => ({
+            ...prev,
+            image: base64Image
+          }));
+        } catch (error) {
+          console.error('Error converting image to base64:', error);
+          toast.error('Error processing image');
+        }
+      }
+    };
+
+    const handleRemoveImage = () => {
+      setImageFile(null);
+      setImagePreview("");
+      setFormData(prev => ({
+        ...prev,
+        image: ""
+      }));
+    };
+
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      onSubmit(formData);
+      
+      // Prepare testimony data object
+      const testimonyData = {
+        name: formData.name.trim(),
+        role: formData.role.trim(),
+        content: formData.content.trim(),
+        rating: parseInt(formData.rating),
+        image: formData.image || getDefaultImage(0),
+        email: formData.email.trim(),
+        featured: Boolean(formData.featured),
+        status: "published"
+      };
+
+      // Validate required fields
+      if (!testimonyData.name || !testimonyData.email || !testimonyData.role || !testimonyData.content) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(testimonyData.email)) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+
+      onSubmit(testimonyData);
     };
 
     return (
@@ -328,18 +308,18 @@ export const TestimonyManagement = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[95vh] overflow-y-auto m-2"
+              className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-xl w-full max-w-md sm:max-w-2xl max-h-[95vh] overflow-y-auto m-2"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                   {title}
                 </h2>
                 <button
                   onClick={onClose}
                   className="p-1 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  <CloseIcon className="text-gray-600 dark:text-gray-300 text-lg sm:text-xl" />
+                  <CloseIcon className="text-gray-600 dark:text-gray-300 text-base sm:text-lg" />
                 </button>
               </div>
 
@@ -349,25 +329,43 @@ export const TestimonyManagement = () => {
                 className="p-4 sm:p-6 space-y-4 sm:space-y-6 text-black overflow-y-auto"
               >
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                     Testimony Information
                   </h3>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-3 sm:gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                         Full Name *
                       </label>
                       <div className="relative">
-                        <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                        <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
                         <input
                           type="text"
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                          className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                           placeholder="John Smith"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                        Email Address *
+                      </label>
+                      <div className="relative">
+                        <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                          placeholder="john@example.com"
                         />
                       </div>
                     </div>
@@ -377,14 +375,14 @@ export const TestimonyManagement = () => {
                         Role/Position *
                       </label>
                       <div className="relative">
-                        <WorkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                        <WorkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
                         <input
                           type="text"
                           name="role"
                           value={formData.role}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                          className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                           placeholder="Car Enthusiast"
                         />
                       </div>
@@ -399,9 +397,9 @@ export const TestimonyManagement = () => {
                       rating={formData.rating}
                       onRatingChange={handleRatingChange}
                       editable={true}
-                      size="large"
+                      size="medium"
                     />
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {formData.rating} out of 5 stars
                     </div>
                   </div>
@@ -411,86 +409,135 @@ export const TestimonyManagement = () => {
                       Testimony Content *
                     </label>
                     <div className="relative">
-                      <MessageIcon className="absolute left-3 top-3 text-gray-400 text-lg" />
+                      <MessageIcon className="absolute left-3 top-3 text-gray-400 text-sm sm:text-base" />
                       <textarea
                         name="content"
                         value={formData.content}
                         onChange={handleInputChange}
                         required
                         rows={4}
-                        className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="Share your experience with our service..."
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                        Profile Image URL
+                  {/* Image Upload Section */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                      Profile Image
+                    </label>
+                    
+                    {/* Image Upload Area */}
+                    <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 sm:p-6 text-center hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
+                      {imagePreview ? (
+                        <div className="space-y-3">
+                          <div className="flex justify-center">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                            />
+                          </div>
+                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                            Image selected: {imageFile?.name}
+                          </p>
+                          <div className="flex space-x-2 justify-center">
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById('image-upload').click()}
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm"
+                            >
+                              Change Image
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <CloudUploadIcon className="mx-auto text-gray-400 text-2xl sm:text-3xl" />
+                          <div>
+                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                              Click to upload profile image
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                              PNG, JPG, JPEG up to 5MB
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => document.getElementById('image-upload').click()}
+                            className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-xs sm:text-sm"
+                          >
+                            Choose File
+                          </button>
+                        </div>
+                      )}
+                      
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* URL Input as fallback */}
+                    <div className="mt-3">
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        Or enter image URL:
                       </label>
                       <input
                         type="url"
                         name="image"
-                        value={formData.image}
+                        value={formData.image && !formData.image.startsWith('data:') ? formData.image : ''}
                         onChange={handleInputChange}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="https://example.com/profile.jpg"
                       />
                     </div>
-
-                    <div className="flex items-center space-x-2 pt-2">
-                      <input
-                        type="checkbox"
-                        name="featured"
-                        checked={formData.featured}
-                        onChange={handleInputChange}
-                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                      />
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Mark as Featured
-                      </label>
-                    </div>
                   </div>
 
-                  {/* Image Preview */}
-                  {formData.image && (
-                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Image Preview
-                      </label>
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={formData.image}
-                          alt="Preview"
-                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "block";
-                          }}
-                        />
-                        <div className="hidden text-red-500 text-sm">
-                          Unable to load image. Please check the URL.
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex items-center space-x-2 pt-2">
+                    <input
+                      type="checkbox"
+                      name="featured"
+                      checked={formData.featured}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Mark as Featured
+                    </label>
+                  </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base"
+                    className="flex-1 px-3 sm:px-4 md:px-6 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all text-sm sm:text-base"
+                    disabled={isSubmitting}
+                    className={`flex-1 px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg transition-all text-sm ${
+                      isSubmitting
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:from-blue-700 hover:to-blue-800"
+                    }`}
                   >
-                    {initialData ? "Update Testimony" : "Create Testimony"}
+                    {isSubmitting ? "Submitting..." : initialData ? "Update Testimony" : "Create Testimony"}
                   </button>
                 </div>
               </form>
@@ -532,72 +579,122 @@ export const TestimonyManagement = () => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus, filterRating, filterFeatured]);
 
-  const handleCreateTestimony = (testimonyData) => {
-    const newTestimony = {
-      ...testimonyData,
-      id: Date.now(),
-      status: "published",
-      createdAt: new Date().toISOString().split("T")[0],
-      rating: parseInt(testimonyData.rating),
-    };
-    setTestimonies((prev) => [newTestimony, ...prev]);
-    toast.success(
-      `Testimony from "${testimonyData.name}" created successfully!`
-    );
-    setIsCreateModalOpen(false);
-  };
+  const handleCreateTestimony = async (testimonyData) => {
+    setIsSubmitting(true);
+    try {
+      // Prepare data for API submission in the required format
+      const apiData = {
+        name: testimonyData.name,
+        role: testimonyData.role,
+        content: testimonyData.content,
+        rating: testimonyData.rating,
+        image: testimonyData.image, // This will be base64 string if uploaded from local
+        email: testimonyData.email,
+        featured: testimonyData.featured,
+        status: testimonyData.status
+      };
 
-  const handleEditTestimony = (testimonyData) => {
-    setTestimonies((prev) =>
-      prev.map((testimony) =>
-        testimony.id === editingTestimony.id
-          ? {
-              ...testimonyData,
-              id: testimony.id,
-              rating: parseInt(testimonyData.rating),
-            }
-          : testimony
-      )
-    );
-    toast.success(
-      `Testimony from "${testimonyData.name}" updated successfully!`
-    );
-    setIsEditModalOpen(false);
-    setEditingTestimony(null);
-  };
+      console.log('Submitting testimony data:', {
+        ...apiData,
+        image: apiData.image ? `${apiData.image.substring(0, 100)}...` : 'No image'
+      });
 
-  const handleDeleteTestimony = (testimonyId, testimonyName) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete testimony from "${testimonyName}"?`
-      )
-    ) {
-      setTestimonies((prev) =>
-        prev.filter((testimony) => testimony.id !== testimonyId)
-      );
-      toast.success(`Testimony from "${testimonyName}" deleted successfully!`);
+      const response = await axios.post(API_URL, apiData);
+
+      if (response.status === 201 || response.status === 200) {
+        // Refresh the testimonies list
+        await fetchTestimonies();
+        toast.success(`Testimony from "${testimonyData.name}" created successfully!`);
+        setIsCreateModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating testimony:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        toast.error(`Failed to create testimony: ${error.response.data.message || 'Server error'}`);
+      } else {
+        toast.error("Failed to create testimony: Network error");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleStatusChange = (testimonyId, newStatus) => {
-    setTestimonies((prev) =>
-      prev.map((testimony) =>
-        testimony.id === testimonyId
-          ? { ...testimony, status: newStatus }
-          : testimony
-      )
-    );
-    toast.success(`Testimony status updated to ${newStatus}`);
+  const handleEditTestimonyFields = async (testimonyData) => {
+    setIsSubmitting(true);
+    try {
+      const apiData = {
+        name: testimonyData.name,
+        role: testimonyData.role,
+        content: testimonyData.content,
+        rating: testimonyData.rating,
+        image: testimonyData.image,
+        email: testimonyData.email,
+        featured: testimonyData.featured,
+        status: testimonyData.status || "published"
+      };
+
+      const response = await axios.put(`${API_URL}/${editingTestimony.id}`, apiData);
+
+      if (response.status === 200) {
+        await fetchTestimonies();
+        toast.success(`Testimony from "${testimonyData.name}" updated successfully!`);
+        setIsEditModalOpen(false);
+        setEditingTestimony(null);
+      }
+    } catch (error) {
+      console.error("Error updating testimony:", error);
+      if (error.response) {
+        toast.error(`Failed to update testimony: ${error.response.data.message || 'Server error'}`);
+      } else {
+        toast.error("Failed to update testimony: Network error");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const toggleFeatured = (testimonyId) => {
-    setTestimonies((prev) =>
-      prev.map((testimony) =>
-        testimony.id === testimonyId
-          ? { ...testimony, featured: !testimony.featured }
-          : testimony
-      )
-    );
+  const handleDeleteTestimony = async (testimonyId, testimonyName) => {
+    if (window.confirm(`Are you sure you want to delete testimony from "${testimonyName}"?`)) {
+      try {
+        await axios.delete(`${API_URL}/${testimonyId}`);
+        await fetchTestimonies();
+        toast.success(`Testimony from "${testimonyName}" deleted successfully!`);
+      } catch (error) {
+        console.error("Error deleting testimony:", error);
+        toast.error("Failed to delete testimony");
+      }
+    }
+  };
+
+  // Function to edit testimony status only
+  const handleEditTestimonyStatus = async (testimonyId, newStatus) => {
+    try {
+      const testimony = testimonies.find(t => t.id === testimonyId);
+      if (!testimony) {
+        toast.error("Testimony not found");
+        return;
+      }
+
+      const apiData = {
+        name: testimony.name,
+        role: testimony.role,
+        content: testimony.content,
+        rating: testimony.rating,
+        image: testimony.image,
+        email: testimony.email,
+        featured: testimony.featured,
+        status: newStatus
+      };
+
+      await axios.put(`${API_URL}/${testimonyId}`, apiData);
+      await fetchTestimonies();
+      toast.success(`Testimony status updated to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating testimony status:", error);
+      toast.error("Failed to update testimony status");
+    }
   };
 
   const openEditModal = (testimony) => {
@@ -619,19 +716,22 @@ export const TestimonyManagement = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
+      className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
     >
       {/* Testimony Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
+      <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
             <img
               src={testimony.image}
               alt={testimony.name}
-              className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600 flex-shrink-0"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600 flex-shrink-0"
+              onError={(e) => {
+                e.target.src = getDefaultImage(0);
+              }}
             />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 dark:text-white truncate text-sm">
+              <h3 className="font-semibold text-gray-900 dark:text-white truncate text-xs sm:text-sm">
                 {testimony.name}
               </h3>
               <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
@@ -649,14 +749,14 @@ export const TestimonyManagement = () => {
 
         <div className="flex items-center justify-between">
           <StarRating rating={testimony.rating} size="small" />
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             {testimony.featured && (
-              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-xs font-medium">
+              <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-xs font-medium">
                 Featured
               </span>
             )}
             <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+              className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-medium ${getStatusColor(
                 testimony.status
               )}`}
             >
@@ -667,12 +767,12 @@ export const TestimonyManagement = () => {
       </div>
 
       {/* Testimony Content */}
-      <div className="p-4">
-        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 line-clamp-3">
+      <div className="p-3 sm:p-4">
+        <p className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-3">
           "{testimony.content}"
         </p>
 
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">
           Added on {testimony.createdAt}
         </div>
 
@@ -683,12 +783,12 @@ export const TestimonyManagement = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-2"
+              className="border-t border-gray-200 dark:border-gray-700 pt-2 sm:pt-3 space-y-2"
             >
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => openEditModal(testimony)}
-                  className="flex items-center justify-center space-x-1 bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors text-xs"
+                  className="flex items-center justify-center space-x-1 bg-blue-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg hover:bg-blue-700 transition-colors text-xs"
                 >
                   <EditIcon fontSize="small" />
                   <span>Edit</span>
@@ -696,7 +796,7 @@ export const TestimonyManagement = () => {
 
                 <button
                   onClick={() => handleDeleteTestimony(testimony.id, testimony.name)}
-                  className="flex items-center justify-center space-x-1 bg-red-600 text-white py-2 px-3 rounded-lg hover:bg-red-700 transition-colors text-xs"
+                  className="flex items-center justify-center space-x-1 bg-red-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg hover:bg-red-700 transition-colors text-xs"
                 >
                   <DeleteIcon fontSize="small" />
                   <span>Delete</span>
@@ -705,8 +805,8 @@ export const TestimonyManagement = () => {
               
               <select
                 value={testimony.status}
-                onChange={(e) => handleStatusChange(testimony.id, e.target.value)}
-                className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 py-2 text-xs border-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => handleEditTestimonyStatus(testimony.id, e.target.value)}
+                className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 py-1.5 sm:py-2 text-xs border-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="published">Publish</option>
                 <option value="draft">Draft</option>
@@ -721,13 +821,13 @@ export const TestimonyManagement = () => {
           <div className="flex space-x-2">
             <button
               onClick={() => openEditModal(testimony)}
-              className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-xs"
+              className="flex-1 bg-blue-600 text-white py-1.5 sm:py-2 rounded-lg hover:bg-blue-700 transition-colors text-xs"
             >
               Edit
             </button>
             <select
               value={testimony.status}
-              onChange={(e) => handleStatusChange(testimony.id, e.target.value)}
+              onChange={(e) => handleEditTestimonyStatus(testimony.id, e.target.value)}
               className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 text-xs border-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="published">Publish</option>
@@ -761,9 +861,9 @@ export const TestimonyManagement = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-6 sm:mt-8"
+        className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 mt-4 sm:mt-6 md:mt-8"
       >
-        <div className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           Showing {indexOfFirstTestimony + 1}-
           {Math.min(indexOfLastTestimony, filteredTestimonies.length)} of{" "}
           {filteredTestimonies.length} testimonies
@@ -782,11 +882,11 @@ export const TestimonyManagement = () => {
             <>
               <button
                 onClick={() => setCurrentPage(1)}
-                className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+                className="px-2 sm:px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-xs sm:text-sm"
               >
                 1
               </button>
-              {startPage > 2 && <span className="px-1 sm:px-2 text-sm">...</span>}
+              {startPage > 2 && <span className="px-1 sm:px-2 text-xs sm:text-sm">...</span>}
             </>
           )}
 
@@ -794,7 +894,7 @@ export const TestimonyManagement = () => {
             <button
               key={number}
               onClick={() => setCurrentPage(number)}
-              className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg border transition-colors text-sm ${
+              className={`px-2 sm:px-3 py-1 rounded-lg border transition-colors text-xs sm:text-sm ${
                 currentPage === number
                   ? "bg-blue-600 text-white border-blue-600"
                   : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -806,10 +906,10 @@ export const TestimonyManagement = () => {
 
           {endPage < totalPages && (
             <>
-              {endPage < totalPages - 1 && <span className="px-1 sm:px-2 text-sm">...</span>}
+              {endPage < totalPages - 1 && <span className="px-1 sm:px-2 text-xs sm:text-sm">...</span>}
               <button
                 onClick={() => setCurrentPage(totalPages)}
-                className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+                className="px-2 sm:px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-xs sm:text-sm"
               >
                 {totalPages}
               </button>
@@ -841,6 +941,21 @@ export const TestimonyManagement = () => {
     }
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Sidebar />
+        <div className="flex-1 p-4 sm:p-6 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-3 sm:mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Loading testimonies...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Sidebar */}
@@ -854,14 +969,14 @@ export const TestimonyManagement = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 sm:mb-8"
+          className="mb-4 sm:mb-6 md:mb-8"
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="mb-4 lg:mb-0">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <div className="mb-3 sm:mb-4 lg:mb-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                 Testimony Management
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">
+              <p className="text-gray-600 dark:text-gray-400 mt-1 text-xs sm:text-sm md:text-base">
                 Manage customer testimonials and reviews
               </p>
             </div>
@@ -870,16 +985,16 @@ export const TestimonyManagement = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg text-sm sm:text-base w-full lg:w-auto"
+              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg text-sm w-full lg:w-auto"
             >
-              <AddIcon className="text-lg" />
+              <AddIcon className="text-base sm:text-lg" />
               <span>Add New Testimony</span>
             </motion.button>
           </div>
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6 mb-4 sm:mb-6 md:mb-8">
           <StatCard
             title="Total Testimonies"
             value={testimonies.length}
@@ -907,28 +1022,28 @@ export const TestimonyManagement = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-sm p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6">
           <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 max-w-full sm:max-w-md">
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
                 <input
                   type="text"
                   placeholder="Search testimonies..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 sm:space-x-4 flex-wrap gap-2">
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-2">
               <FilterIcon className="text-gray-400 hidden sm:block" />
               
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[120px]"
+                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[100px] sm:min-w-[120px]"
               >
                 <option value="all">All Status</option>
                 <option value="published">Published</option>
@@ -939,7 +1054,7 @@ export const TestimonyManagement = () => {
               <select
                 value={filterRating}
                 onChange={(e) => setFilterRating(e.target.value)}
-                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[120px]"
+                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[100px] sm:min-w-[120px]"
               >
                 <option value="all">All Ratings</option>
                 <option value="5">5 Stars</option>
@@ -952,7 +1067,7 @@ export const TestimonyManagement = () => {
               <select
                 value={filterFeatured}
                 onChange={(e) => setFilterFeatured(e.target.value)}
-                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[120px]"
+                className="flex-1 sm:flex-none border border-gray-300 dark:border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white min-w-[100px] sm:min-w-[120px]"
               >
                 <option value="all">All</option>
                 <option value="featured">Featured</option>
@@ -963,14 +1078,14 @@ export const TestimonyManagement = () => {
         </div>
 
         {/* Results Count */}
-        <div className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+        <div className="mb-2 sm:mb-3 md:mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           Showing {indexOfFirstTestimony + 1}-
           {Math.min(indexOfLastTestimony, filteredTestimonies.length)} of{" "}
           {filteredTestimonies.length} testimonies
         </div>
 
         {/* Desktop Testimonies Grid (hidden on mobile) */}
-        <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
           <AnimatePresence>
             {currentTestimonies.map((testimony, index) => (
               <motion.div
@@ -988,7 +1103,10 @@ export const TestimonyManagement = () => {
                       <img
                         src={testimony.image}
                         alt={testimony.name}
-                        className="w-12 h-12 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          e.target.src = getDefaultImage(0);
+                        }}
                       />
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
@@ -1054,9 +1172,9 @@ export const TestimonyManagement = () => {
                     <select
                       value={testimony.status}
                       onChange={(e) =>
-                        handleStatusChange(testimony.id, e.target.value)
+                        handleEditTestimonyStatus(testimony.id, e.target.value)
                       }
-                      className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 text-sm border-none focus:ring-2 focus:ring-blue-500"
+                      className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 text-xs sm:text-sm border-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="published">Publish</option>
                       <option value="draft">Draft</option>
@@ -1070,7 +1188,7 @@ export const TestimonyManagement = () => {
         </div>
 
         {/* Mobile Testimonies List (shown on mobile) */}
-        <div className="lg:hidden space-y-3 sm:space-y-4">
+        <div className="lg:hidden space-y-2 sm:space-y-3 md:space-y-4">
           <AnimatePresence>
             {currentTestimonies.map((testimony, index) => (
               <MobileTestimonyCard 
@@ -1086,13 +1204,13 @@ export const TestimonyManagement = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-8 sm:py-12"
+            className="text-center py-6 sm:py-8 md:py-12"
           >
-            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">💬</div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <div className="text-3xl sm:text-4xl md:text-6xl mb-2 sm:mb-3 md:mb-4">💬</div>
+            <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-1 sm:mb-2">
               No testimonies found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
+            <p className="text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 md:mb-6 text-xs sm:text-sm md:text-base">
               {searchTerm ||
               filterStatus !== "all" ||
               filterRating !== "all" ||
@@ -1106,7 +1224,7 @@ export const TestimonyManagement = () => {
               filterFeatured === "all" && (
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all text-sm sm:text-base"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all text-xs sm:text-sm md:text-base"
                 >
                   Add Your First Testimony
                 </button>
@@ -1131,7 +1249,7 @@ export const TestimonyManagement = () => {
             setIsEditModalOpen(false);
             setEditingTestimony(null);
           }}
-          onSubmit={handleEditTestimony}
+          onSubmit={handleEditTestimonyFields}
           title="Edit Testimony"
           initialData={editingTestimony}
         />

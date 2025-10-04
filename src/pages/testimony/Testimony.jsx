@@ -3,15 +3,18 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 export const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newTestimonial, setNewTestimonial] = useState({
     name: "",
     role: "",
     content: "",
-    rating: 5,
+    email: "",
+    rating: "",
     image: null,
     imagePreview: "",
   });
@@ -149,7 +152,7 @@ export const Testimonials = () => {
               key={i}
               type="button"
               onClick={() => onRate(i + 1)}
-              className="focus:outline-none"
+              className="focus:outline-none bg-gradient-to-b from-blue-300 to-indigo-300"
             >
               {i < rating ? (
                 <svg
@@ -192,41 +195,57 @@ export const Testimonials = () => {
     );
   };
 
-  const handleCreateTestimonial = () => {
-    if (!newTestimonial.name || !newTestimonial.content) {
+  const handleCreateTestimonial = async () => {
+    if (!newTestimonial.name || !newTestimonial.content || !newTestimonial.email) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    // Create a unique ID for the new testimonial
-    const newId = Math.max(...testimonials.map((t) => t.id)) + 1;
+    setIsSubmitting(true);
 
-    // For demo purposes, we'll use the image preview URL
-    // In a real application, you would upload the image to a server
-    const imageUrl =
-      newTestimonial.imagePreview ||
-      "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80";
+    try {
+      // Prepare the data for API submission
+      const testimonialData = {
+        name: newTestimonial.name,
+        role: newTestimonial.role || "Customer",
+        content: newTestimonial.content,
+        email: newTestimonial.email,
+        rating: parseInt(newTestimonial.rating) || 5,
+        image: newTestimonial.imagePreview || "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      };
 
-    const newTestimonialObj = {
-      id: newId,
-      name: newTestimonial.name,
-      role: newTestimonial.role,
-      content: newTestimonial.content,
-      rating: newTestimonial.rating,
-      image: imageUrl,
-    };
+      // Submit to API
+      const response = await axios.post(
+        "https://floridabarnode.onrender.com/testimonials",
+        testimonialData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    setTestimonials([...testimonials, newTestimonialObj]);
-    setIsCreateModalOpen(false);
-    setNewTestimonial({
-      name: "",
-      role: "",
-      content: "",
-      rating: 5,
-      image: null,
-      imagePreview: "",
-    });
-    toast.success("Testimonial added successfully!");
+      if (response.status === 201 || response.status === 200) {
+        // For demo purposes, also add to local state
+        const newId = Math.max(...testimonials.map((t) => t.id)) + 1;
+        const newTestimonialObj = {
+          id: newId,
+          ...testimonialData,
+        };
+
+        setTestimonials([...testimonials, newTestimonialObj]);
+        setIsCreateModalOpen(false);
+        resetForm();
+        toast.success("Testimonial submitted successfully!");
+      } else {
+        throw new Error("Failed to submit testimonial");
+      }
+    } catch (error) {
+      console.error("Error submitting testimonial:", error);
+      toast.error("Failed to submit testimonial. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -234,6 +253,7 @@ export const Testimonials = () => {
       name: "",
       role: "",
       content: "",
+      email: "",
       rating: 5,
       image: null,
       imagePreview: "",
@@ -394,7 +414,25 @@ export const Testimonials = () => {
                         required
                       />
                     </div>
-
+                    <div>
+                      <label htmlFor="email" className="block font-medium mb-2">
+                        Your Email *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={newTestimonial.email}
+                        onChange={(e) =>
+                          setNewTestimonial({
+                            ...newTestimonial,
+                            email: e.target.value,
+                          })
+                        }
+                        className="w-full p-3 border border-gray-300 rounded-md"
+                        placeholder="Enter your email"
+                        required
+                      />
+                    </div>
                     <div>
                       <label htmlFor="role" className="block font-medium mb-2">
                         Your Role
@@ -516,9 +554,14 @@ export const Testimonials = () => {
 
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-md font-bold hover:bg-blue-700 transition-colors mt-4"
+                      disabled={isSubmitting}
+                      className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-md font-bold transition-colors mt-4 ${
+                        isSubmitting
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-blue-700"
+                      }`}
                     >
-                      Submit Testimonial
+                      {isSubmitting ? "Submitting..." : "Submit Testimonial"}
                     </button>
                   </form>
                 </div>

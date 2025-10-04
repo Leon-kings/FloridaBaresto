@@ -16,32 +16,133 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is logged in on app start
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+  // Safe localStorage functions with error handling
+  const getStoredItem = (key) => {
+    try {
+      if (typeof window === 'undefined') return null;
+      const item = localStorage.getItem(key);
+      return item && item !== 'undefined' && item !== 'null' ? item : null;
+    } catch (error) {
+      console.error(`Error reading ${key} from localStorage:`, error);
+      return null;
     }
-    setLoading(false);
+  };
+
+  const setStoredItem = (key, value) => {
+    try {
+      if (typeof window === 'undefined') return;
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.error(`Error storing ${key} in localStorage:`, error);
+    }
+  };
+
+  const removeStoredItem = (key) => {
+    try {
+      if (typeof window === 'undefined') return;
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error(`Error removing ${key} from localStorage:`, error);
+    }
+  };
+
+  useEffect(() => {
+    const initializeAuth = () => {
+      try {
+        const token = getStoredItem('token');
+        const userData = getStoredItem('user');
+        
+        console.log('Initializing auth:', { token, userData }); // Debug log
+        
+        if (token && userData) {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+          console.log('User restored from storage:', parsedUser); // Debug log
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        removeStoredItem('token');
+        removeStoredItem('user');
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = (userData, token) => {
-    setUser(userData);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    try {
+      console.log('Login function called with:', { userData, token }); // Debug log
+      
+      // Ensure userData has required properties
+      const userWithEmail = {
+        ...userData,
+        email: userData.email || userData.userEmail || '',
+        status: userData.status || userData.role || 'user',
+        lastLogin: new Date().toISOString()
+      };
+
+      console.log('Processed user data for storage:', userWithEmail); // Debug log
+
+      setUser(userWithEmail);
+      setStoredItem('token', token);
+      setStoredItem('user', JSON.stringify(userWithEmail));
+      
+      if (userWithEmail.email) {
+        setStoredItem('userEmail', userWithEmail.email);
+      }
+
+      console.log('Login completed successfully'); // Debug log
+      
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw new Error('Login failed');
+    }
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    try {
+      console.log('Logging out user'); // Debug log
+      setUser(null);
+      removeStoredItem('token');
+      removeStoredItem('user');
+      removeStoredItem('userEmail');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   const updateUser = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    try {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      setStoredItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw new Error('User update failed');
+    }
+  };
+
+  const getStoredEmail = () => {
+    return getStoredItem('userEmail');
+  };
+
+  const clearStoredEmail = () => {
+    removeStoredItem('userEmail');
+  };
+
+  // Check if token exists and is valid
+  const isTokenValid = () => {
+    const token = getStoredItem('token');
+    return !!token;
+  };
+
+  // Get authentication headers for API calls
+  const getAuthHeaders = () => {
+    const token = getStoredItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
   const value = {
@@ -49,10 +150,16 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUser,
+    getStoredEmail,
+    clearStoredEmail,
+    getAuthHeaders,
+    isTokenValid,
     loading,
-    isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
-    isUser: user?.role === 'user'
+    isAuthenticated: !!user && isTokenValid(),
+    isAdmin: user?.status === 'admin' || user?.role === 'admin',
+    isUser: user?.status === 'user' || user?.role === 'user',
+    isManager: user?.status === 'manager' || user?.role === 'manager',
+    userEmail: user?.email || getStoredEmail()
   };
 
   return (
