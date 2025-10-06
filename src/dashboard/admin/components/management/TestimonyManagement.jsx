@@ -25,7 +25,7 @@ import {
 import { Sidebar } from "../sidebar/Sidebar";
 
 export const TestimonyManagement = () => {
-  const API_URL = "https://floridabarnode.onrender.com/testimonials";
+  const API_URL = "https://florida-jv3u.onrender.com/testimonials";
 
   const [testimonies, setTestimonies] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -52,7 +52,7 @@ export const TestimonyManagement = () => {
       const response = await axios.get(API_URL);
       
       // Transform API data to match our component structure
-      const transformedData = response.data.map((testimony, index) => ({
+      const transformedData = response.data.data.testimonials.map((testimony, index) => ({
         id: testimony._id || testimony.id || `testimony-${index + 1}`,
         name: testimony.name || "Unknown User",
         role: testimony.role || "Customer",

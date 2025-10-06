@@ -50,11 +50,11 @@ export const Sidebar = () => {
     { name: "Dashboard", icon: <DashboardIcon />, url: "/dashboard" },
     { name: "Testimony", icon: <FormatQuote />, url: "/dashboard/728981" },
     { name: "Users", icon: <PersonIcon />, url: "/dashboard/78292" },
-    { name: "Orders", icon: <NotificationsIcon />, url: "/dashboard/72891" },
+    { name: "Orders", icon: <NotificationsIcon />, url: "/83920/jie09" },
     { name: "Store", icon: <Store />, url: "/dashboard/7281/191" },
     { name: "Inventory", icon: <Inventory />, url: "/dashboard/7292" },
-    // { name: "Balance", icon: <Balance />, url: "/dashboard/payment" },
-    { name: "Settings", icon: <SettingsIcon />, url: "/dashboard/02000" },
+    { name: "Balance", icon: <Balance />, url: "" },
+    // { name: "Settings", icon: <SettingsIcon />, url: "" },
   ];
 
   const toggleSidebar = () => {

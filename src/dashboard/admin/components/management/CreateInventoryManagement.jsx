@@ -81,63 +81,63 @@ class InventoryAPI {
 
   async getInventory() {
     const response = await this.api.get("/orders");
-    return response.data.data.inventory;
+    return response.data;
   }
 
   async stockIn(data) {
     const response = await this.api.post("/orders/stock-in", data);
-    return response.data.data;
+    return response.data;
   }
 
   async stockOut(data) {
     const response = await this.api.post("/orders/stock-out", data);
-    return response.data.data;
+    return response.data;
   }
 
   async bulkStockIn(data) {
     const response = await this.api.post("/orders/bulk-stock-in", data);
-    return response.data.data;
+    return response.data;
   }
 
   async getProducts(params = {}) {
     const response = await this.api.get("/products", { params });
-    return response.data.data.products;
+    return response.data;
   }
 
   async getProductById(id) {
     const response = await this.api.get(`/products/${id}`);
-    return response.data.data;
+    return response.data;
   }
 
   async createProduct(data) {
-    const response = await this.api.post("/products", data);
-    return response.data.data;
+    const response = await this.api.post("orders/products", data);
+    return response.data;
   }
 
   async updateProduct(id, data) {
-    const response = await this.api.put(`/products/${id}`, data);
-    return response.data.data;
+    const response = await this.api.put(`orders/products/${id}`, data);
+    return response.data;
   }
 
   async deleteProduct(id) {
-    const response = await this.api.delete(`/products/${id}`);
-    return response.data.data;
+    const response = await this.api.delete(`orders/products/${id}`);
+    return response.data;
   }
 
   async getStockMovements(params = {}) {
     const response = await this.api.get("/orders/movements/daily", { params });
-    return response.data.data;
+    return response.data;
   }
 
   async getLowStock() {
     const response = await this.api.get("/orders/alerts/low-stock");
-    return response.data.data;
+    return response.data;
   }
 
   // Sales operations
   async createSale(data) {
     const response = await this.api.post("/financials/purchases", data);
-    return response.data.data;
+    return response.data;
   }
 
   async getSales(params = {}) {
@@ -164,8 +164,6 @@ class InventoryAPI {
 
 // Create and export singleton instance
 const inventoryAPI = new InventoryAPI();
-
-// Mock data fallback
 
 export const CreateInventoryManagements = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -214,11 +212,13 @@ export const CreateInventoryManagements = () => {
     setLoading(true);
     try {
       const data = await inventoryAPI.getInventory();
-      setInventory(data.data?.inventory );
+      // Fix: Properly handle the API response structure
+      const inventoryData = data.data?.inventory || data.inventory || [];
+      setInventory(Array.isArray(inventoryData) ? inventoryData : []);
     } catch (error) {
       console.error("Error loading inventory:", error);
       toast.error("Failed to load inventory");
-      // setInventory(mockProducts);
+      setInventory([]);
     } finally {
       setLoading(false);
     }
@@ -227,25 +227,39 @@ export const CreateInventoryManagements = () => {
   const loadProducts = async () => {
     try {
       const data = await inventoryAPI.getProducts();
-      setProducts(data.data?.products );
+      // Fix: Properly handle the API response structure
+      const productsData = data.data?.products || data.products || [];
+      setProducts(Array.isArray(productsData) ? productsData : []);
     } catch (error) {
       console.error("Error loading products:", error);
-      // setProducts(mockProducts);
+      setProducts([]);
     }
   };
 
-  // Filter functions
+  // Filter functions with proper error handling
   const getLowStockItems = () => {
-    return inventory.filter(
-      (item) => item.currentStock > 0 && item.currentStock <= item.reorderPoint
-    );
+    if (!Array.isArray(inventory)) return [];
+    
+    return inventory.filter((item) => {
+      if (!item) return false;
+      const currentStock = item.currentStock || 0;
+      const reorderPoint = item.reorderPoint || 0;
+      return currentStock > 0 && currentStock <= reorderPoint;
+    });
   };
 
   const getOutOfStockItems = () => {
-    return inventory.filter((item) => item.currentStock === 0);
+    if (!Array.isArray(inventory)) return [];
+    
+    return inventory.filter((item) => {
+      if (!item) return false;
+      return (item.currentStock || 0) === 0;
+    });
   };
 
   const getFilteredInventory = () => {
+    if (!Array.isArray(inventory)) return [];
+
     let filtered = inventory;
 
     // Apply tab filters
@@ -255,13 +269,20 @@ export const CreateInventoryManagements = () => {
       filtered = getOutOfStockItems();
     }
 
-    // Apply search and category filters
+    // Apply search and category filters with safety checks
     filtered = filtered.filter((item) => {
+      if (!item) return false;
+      
+      const name = item.name || "";
+      const sku = item.sku || "";
+      const category = item.category || "";
+      
       const matchesSearch =
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.sku.toLowerCase().includes(searchTerm.toLowerCase());
+        name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sku.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory =
-        selectedCategory === "all" || item.category === selectedCategory;
+        selectedCategory === "all" || category === selectedCategory;
+      
       return matchesSearch && matchesCategory;
     });
 
@@ -270,16 +291,22 @@ export const CreateInventoryManagements = () => {
 
   const filteredInventory = getFilteredInventory();
 
-  // Calculate statistics
+  // Calculate statistics with safety checks
   const stats = {
-    totalItems: inventory.length,
+    totalItems: Array.isArray(inventory) ? inventory.length : 0,
     lowStock: getLowStockItems().length,
     outOfStock: getOutOfStockItems().length,
-    totalValue: inventory.reduce(
-      (sum, item) => sum + item.currentStock * (item.costPrice || 0),
-      0
-    ),
-    categories: [...new Set(inventory.map((item) => item.category))],
+    totalValue: Array.isArray(inventory) 
+      ? inventory.reduce((sum, item) => {
+          if (!item) return sum;
+          const currentStock = item.currentStock || 0;
+          const costPrice = item.costPrice || 0;
+          return sum + currentStock * costPrice;
+        }, 0)
+      : 0,
+    categories: Array.isArray(inventory) 
+      ? [...new Set(inventory.map((item) => item?.category).filter(Boolean))] 
+      : [],
   };
 
   // PDF Export Function
@@ -323,17 +350,17 @@ export const CreateInventoryManagements = () => {
 
       // Inventory Table
       const tableData = filteredInventory.map((item) => [
-        item.name,
-        item.sku,
-        item.category.replace("_", " "),
-        `${item.currentStock} ${item.unit}`,
-        `${item.reorderPoint} ${item.unit}`,
-        item.currentStock === 0
+        item?.name || "N/A",
+        item?.sku || "N/A",
+        item?.category ? item.category.replace("_", " ") : "N/A",
+        `${item?.currentStock || 0} ${item?.unit || ""}`,
+        `${item?.reorderPoint || 0} ${item?.unit || ""}`,
+        (item?.currentStock || 0) === 0
           ? "Out of Stock"
-          : item.currentStock <= item.reorderPoint
+          : (item?.currentStock || 0) <= (item?.reorderPoint || 0)
           ? "Low Stock"
           : "In Stock",
-        `$${(item.currentStock * (item.costPrice || 0)).toFixed(2)}`,
+        `$${((item?.currentStock || 0) * (item?.costPrice || 0)).toFixed(2)}`,
       ]);
 
       autoTable(doc, {
@@ -547,14 +574,20 @@ export const CreateInventoryManagements = () => {
   };
 
   const getStockStatus = (item) => {
-    if (item.currentStock === 0)
+    if (!item) return { status: "Unknown", color: "bg-gray-100 text-gray-800" };
+    
+    const currentStock = item.currentStock || 0;
+    const reorderPoint = item.reorderPoint || 0;
+    
+    if (currentStock === 0)
       return { status: "Out of Stock", color: "bg-red-100 text-red-800" };
-    if (item.currentStock <= item.reorderPoint)
+    if (currentStock <= reorderPoint)
       return { status: "Low Stock", color: "bg-yellow-100 text-yellow-800" };
     return { status: "In Stock", color: "bg-green-100 text-green-800" };
   };
 
-  // Modal Components
+  // Modal Components (same as before, but with fixes for duplicate keys)
+  
   const StockInModal = () => (
     <AnimatePresence>
       {showStockInModal && (
@@ -903,7 +936,7 @@ export const CreateInventoryManagements = () => {
 
             <form onSubmit={handleBulkSubmit} className="p-4 text-black sm:p-6 space-y-3 sm:space-y-4">
               {bulkForm.items.map((item, index) => (
-                <div key={index} className="flex space-x-2 sm:space-x-3 items-start">
+                <div key={`bulk-item-${index}`} className="flex space-x-2 sm:space-x-3 items-start">
                   <div className="flex-1 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                     <div className="xs:col-span-2 md:col-span-1">
                       <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
@@ -1071,272 +1104,280 @@ export const CreateInventoryManagements = () => {
   );
 
   // Low Stock Items Modal
-  const LowStockModal = () => (
-    <AnimatePresence>
-      {showLowStockModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50"
-          onClick={() => setShowLowStockModal(false)}
-        >
+  const LowStockModal = () => {
+    const lowStockItems = getLowStockItems();
+    
+    return (
+      <AnimatePresence>
+        {showLowStockModal && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-xs xs:max-w-sm sm:max-w-2xl md:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50"
+            onClick={() => setShowLowStockModal(false)}
           >
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg">
-                  <WarningIcon className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-600" />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-xl shadow-2xl w-full max-w-xs xs:max-w-sm sm:max-w-2xl md:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg">
+                    <WarningIcon className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                      Low Stock Items
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Products that need restocking
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                    Low Stock Items
-                  </h2>
-                  <p className="text-xs sm:text-sm text-gray-600">
-                    Products that need restocking
-                  </p>
-                </div>
+                <button
+                  onClick={() => setShowLowStockModal(false)}
+                  className="p-1 sm:p-2 bg-gradient-to-tr from-red-500 to-red-600 rounded-lg transition-colors"
+                >
+                  <CloseIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowLowStockModal(false)}
-                className="p-1 sm:p-2 bg-gradient-to-tr from-red-500 to-red-600 rounded-lg transition-colors"
-              >
-                <CloseIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </div>
 
-            <div className="p-4 sm:p-6">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[600px]">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Current Stock
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Reorder Point
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {getLowStockItems().map((item, index) => (
-                      <tr key={item._id} className="hover:bg-gray-50">
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-gray-100 text-blue-600 rounded-lg flex items-center justify-center">
-                              {getCategoryIcon(item.category)}
-                            </div>
-                            <div className="ml-2 sm:ml-4">
-                              <div className="text-xs sm:text-sm font-medium text-gray-900">
-                                {item.name}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {item.sku}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
-                          {item.currentStock} {item.unit}
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                          {item.reorderPoint} {item.unit}
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Low Stock
-                          </span>
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
-                          <button
-                            onClick={() => {
-                              setStockInForm({
-                                productId: item._id,
-                                quantity: "",
-                                costPrice: item.costPrice || "",
-                                supplier: "",
-                                notes: "",
-                              });
-                              setShowLowStockModal(false);
-                              setShowStockInModal(true);
-                            }}
-                            className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
-                            title="Add Stock"
-                          >
-                            <PlusIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                        </td>
+              <div className="p-4 sm:p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[600px]">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Product
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Current Stock
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Reorder Point
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {getLowStockItems().length === 0 && (
-                <div className="text-center py-6 sm:py-8">
-                  <PackageIcon className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No low stock items
-                  </h3>
-                  <p className="mt-1 text-xs sm:text-sm text-gray-500">
-                    All products are well stocked.
-                  </p>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {lowStockItems.map((item) => (
+                        <tr key={item._id} className="hover:bg-gray-50">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-gray-100 text-blue-600 rounded-lg flex items-center justify-center">
+                                {getCategoryIcon(item.category)}
+                              </div>
+                              <div className="ml-2 sm:ml-4">
+                                <div className="text-xs sm:text-sm font-medium text-gray-900">
+                                  {item.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {item.sku}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
+                            {item.currentStock} {item.unit}
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                            {item.reorderPoint} {item.unit}
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              Low Stock
+                            </span>
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                            <button
+                              onClick={() => {
+                                setStockInForm({
+                                  productId: item._id,
+                                  quantity: "",
+                                  costPrice: item.costPrice || "",
+                                  supplier: "",
+                                  notes: "",
+                                });
+                                setShowLowStockModal(false);
+                                setShowStockInModal(true);
+                              }}
+                              className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
+                              title="Add Stock"
+                            >
+                              <PlusIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              )}
-            </div>
+
+                {lowStockItems.length === 0 && (
+                  <div className="text-center py-6 sm:py-8">
+                    <PackageIcon className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">
+                      No low stock items
+                    </h3>
+                    <p className="mt-1 text-xs sm:text-sm text-gray-500">
+                      All products are well stocked.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        )}
+      </AnimatePresence>
+    );
+  };
 
   // Out of Stock Items Modal
-  const OutOfStockModal = () => (
-    <AnimatePresence>
-      {showOutOfStockModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50"
-          onClick={() => setShowOutOfStockModal(false)}
-        >
+  const OutOfStockModal = () => {
+    const outOfStockItems = getOutOfStockItems();
+    
+    return (
+      <AnimatePresence>
+        {showOutOfStockModal && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-xs xs:max-w-sm sm:max-w-2xl md:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50"
+            onClick={() => setShowOutOfStockModal(false)}
           >
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="p-1.5 sm:p-2 bg-red-100 rounded-lg">
-                  <CloseIcon className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-xl shadow-2xl w-full max-w-xs xs:max-w-sm sm:max-w-2xl md:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="p-1.5 sm:p-2 bg-red-100 rounded-lg">
+                    <CloseIcon className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                      Out of Stock Items
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Products that need immediate restocking
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                    Out of Stock Items
-                  </h2>
-                  <p className="text-xs sm:text-sm text-gray-600">
-                    Products that need immediate restocking
-                  </p>
-                </div>
+                <button
+                  onClick={() => setShowOutOfStockModal(false)}
+                  className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <CloseIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowOutOfStockModal(false)}
-                className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <CloseIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </div>
 
-            <div className="p-4 sm:p-6">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[600px]">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Current Stock
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Reorder Point
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {getOutOfStockItems().map((item, index) => (
-                      <tr key={item._id} className="hover:bg-gray-50">
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                              {getCategoryIcon(item.category)}
-                            </div>
-                            <div className="ml-2 sm:ml-4">
-                              <div className="text-xs sm:text-sm font-medium text-gray-900">
-                                {item.name}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {item.sku}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
-                          {item.currentStock} {item.unit}
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                          {item.reorderPoint} {item.unit}
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            Out of Stock
-                          </span>
-                        </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
-                          <button
-                            onClick={() => {
-                              setStockInForm({
-                                productId: item._id,
-                                quantity: "",
-                                costPrice: item.costPrice || "",
-                                supplier: "",
-                                notes: "",
-                              });
-                              setShowOutOfStockModal(false);
-                              setShowStockInModal(true);
-                            }}
-                            className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
-                            title="Add Stock"
-                          >
-                            <PlusIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                        </td>
+              <div className="p-4 sm:p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[600px]">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Product
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Current Stock
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Reorder Point
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {getOutOfStockItems().length === 0 && (
-                <div className="text-center py-6 sm:py-8">
-                  <PackageIcon className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No out of stock items
-                  </h3>
-                  <p className="mt-1 text-xs sm:text-sm text-gray-500">
-                    All products are in stock.
-                  </p>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {outOfStockItems.map((item) => (
+                        <tr key={item._id} className="hover:bg-gray-50">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                {getCategoryIcon(item.category)}
+                              </div>
+                              <div className="ml-2 sm:ml-4">
+                                <div className="text-xs sm:text-sm font-medium text-gray-900">
+                                  {item.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {item.sku}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
+                            {item.currentStock} {item.unit}
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                            {item.reorderPoint} {item.unit}
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              Out of Stock
+                            </span>
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                            <button
+                              onClick={() => {
+                                setStockInForm({
+                                  productId: item._id,
+                                  quantity: "",
+                                  costPrice: item.costPrice || "",
+                                  supplier: "",
+                                  notes: "",
+                                });
+                                setShowOutOfStockModal(false);
+                                setShowStockInModal(true);
+                              }}
+                              className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
+                              title="Add Stock"
+                            >
+                              <PlusIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              )}
-            </div>
+
+                {outOfStockItems.length === 0 && (
+                  <div className="text-center py-6 sm:py-8">
+                    <PackageIcon className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">
+                      No out of stock items
+                    </h3>
+                    <p className="mt-1 text-xs sm:text-sm text-gray-500">
+                      All products are in stock.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        )}
+      </AnimatePresence>
+    );
+  };
 
   // Main render
   return (

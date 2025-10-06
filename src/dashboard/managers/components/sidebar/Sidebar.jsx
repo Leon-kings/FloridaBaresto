@@ -19,6 +19,7 @@ import {
   Store,
   FormatQuote,
   Balance,
+  Inventory,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
@@ -46,13 +47,14 @@ export const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { name: "Dashboard", icon: <DashboardIcon />, url: "/728289/292jh020-7" },
+    { name: "Dashboard", icon: <DashboardIcon />, url: "/manager/dashboard" },
     { name: "Testimony", icon: <FormatQuote />, url: "/dashboard/728981" },
-    { name: "Users", icon: <PersonIcon />, url: "/dashboard/78292" },
-    { name: "Orders", icon: <NotificationsIcon />, url: "/dashboard/72891" },
+    { name: "Users", icon: <PersonIcon /> },
+    { name: "Orders", icon: <NotificationsIcon />, url: "/83920/jie09" },
     { name: "Store", icon: <Store />, url: "/dashboard/7281/191" },
-    { name: "Balance", icon: <Balance />, url: "/dashboard/payment" },
-    { name: "Settings", icon: <SettingsIcon />, url: "/dashboard/02000" },
+    { name: "Inventory", icon: <Inventory />, url: "/dashboard/7292" },
+    { name: "Balance", icon: <Balance />},
+    // { name: "Settings", icon: <SettingsIcon />, url: "" },
   ];
 
   const toggleSidebar = () => {

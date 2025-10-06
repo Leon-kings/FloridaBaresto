@@ -14,8 +14,8 @@ export const Testimonials = () => {
     role: "",
     content: "",
     email: "",
-    rating: "",
-    image: null,
+    rating: 5,
+    imageFile: null,
     imagePreview: "",
   });
   const [testimonials, setTestimonials] = useState([
@@ -92,6 +92,15 @@ export const Testimonials = () => {
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      if (newTestimonial.imagePreview) {
+        URL.revokeObjectURL(newTestimonial.imagePreview);
+      }
+    };
+  }, [newTestimonial.imagePreview]);
+
   // Calculate the testimonials to display based on current index
   const visibleTestimonials = testimonials.slice(
     currentIndex * 3,
@@ -110,49 +119,48 @@ export const Testimonials = () => {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file");
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file (JPEG, PNG, etc.)');
         return;
       }
 
-      // Validate file size (max 5MB)
+      // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
+        toast.error('Image size should be less than 5MB');
         return;
       }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewTestimonial({
-          ...newTestimonial,
-          image: file,
-          imagePreview: reader.result,
-        });
-      };
-      reader.readAsDataURL(file);
+      setNewTestimonial(prev => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
     }
   };
 
   // Remove uploaded image
   const handleRemoveImage = () => {
-    setNewTestimonial({
-      ...newTestimonial,
-      image: null,
+    if (newTestimonial.imagePreview) {
+      URL.revokeObjectURL(newTestimonial.imagePreview);
+    }
+    setNewTestimonial(prev => ({
+      ...prev,
+      imageFile: null,
       imagePreview: "",
-    });
+    }));
   };
 
   // Render star rating
   const renderStars = (rating, editable = false, onRate = null) => {
     return (
-      <div className="flex items-center mt-2">
+      <div className="flex gap-4 items-center mt-2">
         {[...Array(5)].map((_, i) =>
           editable ? (
-            <button
+            <div
               key={i}
               type="button"
               onClick={() => onRate(i + 1)}
-              className="focus:outline-none bg-gradient-to-b from-blue-300 to-indigo-300"
+              className="focus:outline-none bg-gradient-to-l p-2 rounded-2xl from-blue-400 to-indigo-400"
             >
               {i < rating ? (
                 <svg
@@ -177,7 +185,7 @@ export const Testimonials = () => {
                   />
                 </svg>
               )}
-            </button>
+            </div>
           ) : (
             <svg
               key={i}
@@ -195,69 +203,106 @@ export const Testimonials = () => {
     );
   };
 
-  const handleCreateTestimonial = async () => {
-    if (!newTestimonial.name || !newTestimonial.content || !newTestimonial.email) {
-      toast.error("Please fill in all required fields");
-      return;
+const handleCreateTestimonial = async () => {
+  if (!newTestimonial.name || !newTestimonial.content || !newTestimonial.email) {
+    toast.error("Please fill in all required fields");
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const formData = new FormData();
+    formData.append('name', newTestimonial.name);
+    formData.append('role', newTestimonial.role || "Customer");
+    formData.append('content', newTestimonial.content);
+    formData.append('email', newTestimonial.email);
+    formData.append('rating', newTestimonial.rating.toString());
+    
+    // TEMPORARY: Add a dummy user ID for testing
+    // formData.append('userId', '65d8f1a5e8a7c61234bcef78');
+    
+    // Append image file if selected
+    if (newTestimonial.imageFile) {
+      formData.append('image', newTestimonial.imageFile);
+      console.log('Image file appended:', newTestimonial.imageFile.name);
     }
 
-    setIsSubmitting(true);
+    console.log('Sending testimonial data...');
 
-    try {
-      // Prepare the data for API submission
-      const testimonialData = {
+    const response = await axios.post(
+      "https://floridabarnode.onrender.com/testimonials",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (response.status === 201 || response.status === 200) {
+      // For demo purposes, also add to local state
+      const newId = Math.max(...testimonials.map((t) => t.id)) + 1;
+      const newTestimonialObj = {
+        id: newId,
         name: newTestimonial.name,
         role: newTestimonial.role || "Customer",
         content: newTestimonial.content,
         email: newTestimonial.email,
-        rating: parseInt(newTestimonial.rating) || 5,
-        image: newTestimonial.imagePreview || "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+          rating: newTestimonial.rating,
+          image: response.data.data?.testimonial?.image?.url || newTestimonial.imagePreview ,
       };
 
-      // Submit to API
-      const response = await axios.post(
-        "https://floridabarnode.onrender.com/testimonials",
-        testimonialData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 201 || response.status === 200) {
-        // For demo purposes, also add to local state
-        const newId = Math.max(...testimonials.map((t) => t.id)) + 1;
-        const newTestimonialObj = {
-          id: newId,
-          ...testimonialData,
-        };
-
-        setTestimonials([...testimonials, newTestimonialObj]);
-        setIsCreateModalOpen(false);
-        resetForm();
-        toast.success("Testimonial submitted successfully!");
-      } else {
-        throw new Error("Failed to submit testimonial");
-      }
-    } catch (error) {
-      console.error("Error submitting testimonial:", error);
-      toast.error("Failed to submit testimonial. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      setTestimonials([...testimonials, newTestimonialObj]);
+      setIsCreateModalOpen(false);
+      resetForm();
+      toast.success("Testimonial submitted successfully!");
+    } else {
+      throw new Error("Failed to submit testimonial");
     }
-  };
+  } catch (error) {
+    console.error("FULL ERROR OBJECT:", error);
+    
+    if (error.response && error.response.data) {
+      const serverError = error.response.data;
+      console.error("SERVER ERROR DETAILS:", serverError);
+      
+      toast.error(
+        serverError.message || 
+        serverError.error || 
+        `Server Error: ${error.response.status}`
+      );
+    } else if (error.request) {
+      console.error("NO RESPONSE RECEIVED:", error.request);
+      toast.error("No response from server. Check your connection.");
+    } else {
+      console.error("REQUEST SETUP ERROR:", error.message);
+      toast.error("Request failed: " + error.message);
+    }
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const resetForm = () => {
+    // Clean up image preview URL
+    if (newTestimonial.imagePreview) {
+      URL.revokeObjectURL(newTestimonial.imagePreview);
+    }
+    
     setNewTestimonial({
       name: "",
       role: "",
       content: "",
       email: "",
       rating: 5,
-      image: null,
+      imageFile: null,
       imagePreview: "",
     });
+  };
+
+  const closeModal = () => {
+    resetForm();
     setIsCreateModalOpen(false);
   };
 
@@ -354,7 +399,7 @@ export const Testimonials = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsCreateModalOpen(false)}
+              onClick={closeModal}
             >
               <motion.div
                 className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
@@ -369,8 +414,8 @@ export const Testimonials = () => {
                       Share Your Experience
                     </h2>
                     <button
-                      onClick={resetForm}
-                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                      onClick={closeModal}
+                      className="bg-gradient-to-l from-red-500 to-red-600 transition-colors"
                     >
                       <svg
                         className="w-6 h-6"
@@ -479,7 +524,7 @@ export const Testimonials = () => {
                             <button
                               type="button"
                               onClick={handleRemoveImage}
-                              className="absolute top-0 right-1/2 transform translate-x-12 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              className="absolute top-0 right-1/2 transform translate-x-12 bg-gradient-to-r from-red-400 to-red-500 rounded-full p-1 hover:bg-red-600"
                             >
                               <svg
                                 className="w-4 h-4"

@@ -15,6 +15,7 @@ import {
   CheckCircle,
   Error,
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
@@ -88,12 +89,12 @@ export const Footer = () => {
   ];
 
   const quickLinks = [
-    { name: "About Us", url: "#" },
-    { name: "Our Menu", url: "#" },
-    { name: "Services", url: "#" },
-    { name: "Events", url: "#" },
-    { name: "Gallery", url: "#" },
-    { name: "Careers", url: "#" },
+    { name: "About Us", url: "/about" },
+    { name: "Our Menu", url: "/products" },
+    { name: "Services", url: "/services" },
+    { name: "Events", url: "/services" },
+    { name: "Gallery", url: "/about" },
+    { name: "Careers", url: "/" },
   ];
 
   const contactInfo = [
@@ -115,13 +116,16 @@ export const Footer = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/newsletter/subscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "https://floridabarnode.onrender.com/subscriptions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (response.ok) {
         setSubscriptionStatus("success");
@@ -138,7 +142,7 @@ export const Footer = () => {
 
   return (
     <>
-      <footer className="bg-gradient-to-br justify-center items-center from-gray-900 to-gray-800 text-white border-t border-gray-700">
+      <footer className="w-full bg-gradient-to-br justify-center items-center from-gray-900 to-gray-800 text-white border-t border-gray-700">
         {/* Newsletter Section */}
         <section className="bg-gradient-to-r from-amber-600 to-amber-700 py-8 xsm:py-10 sm:py-12 md:py-14 lg:py-16">
           <div className="container mx-auto px-3 xsm:px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
@@ -161,23 +165,23 @@ export const Footer = () => {
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 onSubmit={handleNewsletterSubmit}
-                className="w-full max-w-xs xsm:max-w-sm sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg"
+                className="w-full max-w-xs xsm:max-w-sm text-black sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg"
               >
-                <div className="flex flex-col bg-gray-400 p-2 rounded-2xl sm:flex-row gap-2 xsm:gap-3 sm:gap-4">
+                <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-200 p-2 rounded-2xl sm:flex-row gap-2 xsm:gap-3 sm:gap-4">
                   <div className="flex-1">
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="w-full px-3 xsm:px-4 sm:px-6 py-2 xsm:py-3 sm:py-4 rounded-xl backdrop-blur-sm border border-white/20 text-white transition-all duration-300 text-sm xsm:text-base"
+                      className="w-full px-3 xsm:px-4 sm:px-6 py-2 xsm:py-3 sm:py-4 rounded-xl backdrop-blur-sm border transition-all duration-300 text-sm xsm:text-base"
                       required
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-white text-amber-800 hover:bg-amber-50 px-4 xsm:px-6 sm:px-8 py-2 xsm:py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:scale-105 hover:shadow-amber-200/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm xsm:text-base"
+                    className="bg-gradient-to-t from-blue-400 to-indigo-400 px-4 xsm:px-6 sm:px-8 py-2 xsm:py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:scale-105 hover:shadow-amber-200/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm xsm:text-base"
                   >
                     <Send className="text-base xsm:text-lg" />
                     <span>{isSubmitting ? "Subscribing..." : "Subscribe"}</span>
@@ -221,7 +225,7 @@ export const Footer = () => {
                     <div className="w-full h-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
                       <img
                         src={image.src}
-                        alt={image.alt}
+                        alt=""
                         className="object-cover w-full h-full"
                       />
                     </div>
@@ -278,18 +282,20 @@ export const Footer = () => {
                   {/* Social Links */}
                   <div className="flex space-x-2 xsm:space-x-3">
                     {socialLinks.map((social, index) => (
-                      <motion.a
-                        key={social.name}
-                        href={social.url}
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`bg-gray-800 hover:bg-amber-600 p-2 xsm:p-3 rounded-lg xsm:rounded-xl transition-all duration-300 ${social.color} transform hover:scale-110`}
-                      >
-                        <span className="text-base xsm:text-lg">
-                          {social.icon}
-                        </span>
-                      </motion.a>
+                      <Link key={index}>
+                        <motion.button
+                          key={social.name}
+                          to={social.url}
+                          initial={{ opacity: 0, scale: 0 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={`bg-gradient-to-l from-blue-400 to-violet-400 p-2 xsm:p-3 rounded-lg xsm:rounded-xl transition-all duration-300 ${social.color} transform hover:scale-110`}
+                        >
+                          <span className="text-base xsm:text-lg">
+                            {social.icon}
+                          </span>
+                        </motion.button>
+                      </Link>
                     ))}
                   </div>
                 </motion.div>

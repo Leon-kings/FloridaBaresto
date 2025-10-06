@@ -21,7 +21,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import logo from '../../assets/images/ChatGPT Image Oct 4, 2025, 03_47_28 AM.png'
+import logo from "../../assets/images/ChatGPT Image Oct 4, 2025, 03_47_28 AM.png";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -119,12 +119,12 @@ export const Navbar = () => {
     });
   };
 
-const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!loginData.email || !loginData.password) {
-      toast.error('❌ Please fill in all fields!', {
+      toast.error("❌ Please fill in all fields!", {
         position: "top-right",
         autoClose: 3000,
       });
@@ -136,21 +136,12 @@ const handleLoginSubmit = async (e) => {
     try {
       const API_URL = "https://floridabarnode.onrender.com/users/login";
 
-      const response = await axios.post(
-        API_URL,
-        {
-          email: loginData.email,
-          password: loginData.password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          timeout: 10000,
-        }
-      );
+      const response = await axios.post(API_URL, {
+        email: loginData.email,
+        password: loginData.password,
+      });
 
-      console.log('API Response:', response.data); // Debug log
+      // console.log("API Response:", response.data);
 
       // CORRECTED: Extract from nested structure
       const { token, data } = response.data;
@@ -170,7 +161,6 @@ const handleLoginSubmit = async (e) => {
 
       // Navigate to appropriate dashboard
       navigateToDashboard(user.status);
-
     } catch (error) {
       let errorMessage = "❌ Login failed! Please check your credentials.";
 
@@ -202,168 +192,159 @@ const handleLoginSubmit = async (e) => {
     }
   };
 
-const handleRegisterSubmit = async (e) => {
-  e.preventDefault();
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
 
-  // Debug: Log current state before validation
-  console.log('Current form data:', registerData);
-  console.log('Password comparison:', {
-    password: registerData.password,
-    confirmPassword: registerData.confirmPassword,
-    match: registerData.password === registerData.confirmPassword
-  });
+    // Debug: Log current state before validation
+    // console.log("Current form data:", registerData);
+    // console.log("Password comparison:", {
+    //   password: registerData.password,
+    //   confirmPassword: registerData.confirmPassword,
+    //   match: registerData.password === registerData.confirmPassword,
+    // });
 
-  // Client-side validation - FIXED: Use exact comparison
-  if (registerData.password !== registerData.confirmPassword) {
-    console.log('PASSWORDS DO NOT MATCH:', {
-      password: registerData.password,
-      confirmPassword: registerData.confirmPassword
-    });
-    
-    toast.error("🔒 Passwords do not match!", {
-      position: "top-right",
-      autoClose: 4000,
-    });
-    return;
-  }
+    // Client-side validation - FIXED: Use exact comparison
+    if (registerData.password !== registerData.confirmPassword) {
+      console.log("PASSWORDS DO NOT MATCH:", {
+        password: registerData.password,
+        confirmPassword: registerData.confirmPassword,
+      });
 
-  console.log('✅ Passwords match - proceeding with validation');
+      toast.error("🔒 Passwords do not match!", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
 
-  if (registerData.password.length < 6) {
-    toast.error("🔒 Password must be at least 6 characters long!", {
-      position: "top-right",
-      autoClose: 4000,
-    });
-    return;
-  }
+    console.log("✅ Passwords match - proceeding with validation");
 
-  // Email format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(registerData.email)) {
-    toast.error("📧 Please enter a valid email address!", {
-      position: "top-right",
-      autoClose: 4000,
-    });
-    return;
-  }
+    if (registerData.password.length < 6) {
+      toast.error("🔒 Password must be at least 6 characters long!", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
 
-  // Name validation
-  if (!registerData.name || registerData.name.trim().length < 2) {
-    toast.error("👤 Please enter your full name!", {
-      position: "top-right",
-      autoClose: 4000,
-    });
-    return;
-  }
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(registerData.email)) {
+      toast.error("📧 Please enter a valid email address!", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
 
-  setIsLoading(true);
+    // Name validation
+    if (!registerData.name || registerData.name.trim().length < 2) {
+      toast.error("👤 Please enter your full name!", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
 
-  try {
-    const API_URL = "https://floridabarnode.onrender.com/users/register";
+    setIsLoading(true);
 
-    // Send registration data to real API
-    const response = await axios.post(
-      API_URL,
-      {
+    try {
+      const API_URL = "https://floridabarnode.onrender.com/users/register";
+
+      // Send registration data to real API
+      const response = await axios.post(API_URL, {
         name: registerData.name.trim(),
         email: registerData.email.toLowerCase().trim(),
         password: registerData.password,
-        confirmPassword:registerData.confirmPassword
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: 10000,
+        confirmPassword: registerData.confirmPassword,
+      });
+
+      // console.log("Registration API response:", response.data);
+
+      // FIXED: Handle different possible response structures
+      let token, user;
+
+      if (response.data.token && response.data.data?.user) {
+        // Structure: { token, data: { user } }
+        token = response.data.token;
+        user = response.data.data.user;
+      } else if (response.data.token && response.data.user) {
+        // Structure: { token, user }
+        token = response.data.token;
+        user = response.data.user;
+      } else {
+        // Fallback structure
+        token = response.data.token;
+        user = response.data.user || response.data;
       }
-    );
 
-    console.log('Registration API response:', response.data);
+      console.log("Extracted token and user:", { token, user });
 
-    // FIXED: Handle different possible response structures
-    let token, user;
+      // Store token and user data
+      login(user, token);
 
-    if (response.data.token && response.data.data?.user) {
-      // Structure: { token, data: { user } }
-      token = response.data.token;
-      user = response.data.data.user;
-    } else if (response.data.token && response.data.user) {
-      // Structure: { token, user }
-      token = response.data.token;
-      user = response.data.user;
-    } else {
-      // Fallback structure
-      token = response.data.token;
-      user = response.data.user || response.data;
-    }
+      toast.success("🎊 Registration successful! Welcome to our community!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
 
-    console.log('Extracted token and user:', { token, user });
+      closeModals();
 
-    // Store token and user data
-    login(user, token);
+      // Navigate to appropriate dashboard - FIXED: Use status instead of role
+      navigateToDashboard(user.status || user.role || "user");
+    } catch (error) {
+      let errorMessage = "❌ Registration failed! Please try again.";
 
-    toast.success("🎊 Registration successful! Welcome to our community!", {
-      position: "top-right",
-      autoClose: 3000,
-    });
+      // Enhanced error logging
+      console.error("Registration error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
 
-    closeModals();
+      if (error.response) {
+        const status = error.response.status;
+        const responseData = error.response.data;
 
-    // Navigate to appropriate dashboard - FIXED: Use status instead of role
-    navigateToDashboard(user.status || user.role || "user");
-
-  } catch (error) {
-    let errorMessage = "❌ Registration failed! Please try again.";
-
-    // Enhanced error logging
-    console.error("Registration error details:", {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status
-    });
-
-    if (error.response) {
-      const status = error.response.status;
-      const responseData = error.response.data;
-      
-      if (status === 400) {
-        if (responseData?.errors) {
-          const serverErrors = responseData.errors;
-          if (serverErrors.email) {
-            errorMessage = `❌ ${serverErrors.email[0]}`;
-          } else if (serverErrors.password) {
-            errorMessage = `❌ ${serverErrors.password[0]}`;
-          } else if (serverErrors.name) {
-            errorMessage = `❌ ${serverErrors.name[0]}`;
+        if (status === 400) {
+          if (responseData?.errors) {
+            const serverErrors = responseData.errors;
+            if (serverErrors.email) {
+              errorMessage = `❌ ${serverErrors.email[0]}`;
+            } else if (serverErrors.password) {
+              errorMessage = `❌ ${serverErrors.password[0]}`;
+            } else if (serverErrors.name) {
+              errorMessage = `❌ ${serverErrors.name[0]}`;
+            }
+          } else if (responseData?.message) {
+            errorMessage = `❌ ${responseData.message}`;
+          } else {
+            errorMessage =
+              "❌ Invalid registration data. Please check your information.";
           }
+        } else if (status === 409) {
+          errorMessage = "❌ User already exists with this email!";
+        } else if (status === 422) {
+          errorMessage = "❌ Validation failed. Please check your information.";
+        } else if (status >= 500) {
+          errorMessage = "❌ Server error. Please try again later.";
         } else if (responseData?.message) {
           errorMessage = `❌ ${responseData.message}`;
-        } else {
-          errorMessage = "❌ Invalid registration data. Please check your information.";
         }
-      } else if (status === 409) {
-        errorMessage = "❌ User already exists with this email!";
-      } else if (status === 422) {
-        errorMessage = "❌ Validation failed. Please check your information.";
-      } else if (status >= 500) {
-        errorMessage = "❌ Server error. Please try again later.";
-      } else if (responseData?.message) {
-        errorMessage = `❌ ${responseData.message}`;
+      } else if (error.request) {
+        errorMessage = "❌ Network error. Please check your connection.";
+      } else {
+        errorMessage = `❌ Registration failed: ${error.message}`;
       }
-    } else if (error.request) {
-      errorMessage = "❌ Network error. Please check your connection.";
-    } else {
-      errorMessage = `❌ Registration failed: ${error.message}`;
-    }
 
-    toast.error(errorMessage, {
-      position: "top-right",
-      autoClose: 5000,
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const navigateToDashboard = (status) => {
     // Convert role to lowercase for case-insensitive comparison
     const userRole = status?.toLowerCase();
@@ -373,7 +354,7 @@ const handleRegisterSubmit = async (e) => {
         navigate("/dashboard");
         break;
       case "manager":
-        navigate("/manager-dashboard");
+        navigate("/manager/dashboard");
         break;
       case "user":
         navigate("/user/dashboard");
@@ -393,7 +374,7 @@ const handleRegisterSubmit = async (e) => {
     if (isAdmin) {
       navigate("/dashboard");
     } else if (isManager) {
-      navigate("/manager-dashboard");
+      navigate("/manager/dashboard");
     } else if (isUser) {
       navigate("/user/dashboard");
     } else {
@@ -449,7 +430,7 @@ const handleRegisterSubmit = async (e) => {
                 className="flex items-center space-x-3 cursor-pointer"
                 onClick={() => navigate("/")}
               >
-          <img src={logo} alt="" className='w-20' />
+                <img src={logo} alt="" className="w-20 bg-transparent" />
               </motion.div>
             </div>
 
@@ -493,7 +474,7 @@ const handleRegisterSubmit = async (e) => {
                       whileHover={{ scale: 1.05 }}
                       className="relative group"
                     >
-                      <button className="flex items-center space-x-2 text-black font-medium px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                      <button className="flex items-center space-x-2 bg-gradient-to-b from-green-300 to-indigo-400 font-medium px-4 py-2 rounded-lg  transition-colors">
                         <UserProfileIcon className="h-8 w-8 text-blue-600" />
                         <span className="max-w-32 truncate">{user?.name}</span>
                       </button>

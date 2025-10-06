@@ -11,12 +11,14 @@ import { Services } from "./pages/services/Services";
 import { Products } from "./pages/products/Products";
 import { UndefinedPage } from "./components/notfound/Notfound";
 import { UserDashboard } from "./dashboard/user/UserDashboard";
-import {UserManagement} from "./dashboard/admin/components/management/UserManagement";
+import { UserManagement } from "./dashboard/admin/components/management/UserManagement";
 import { TestimonyManagement } from "./dashboard/admin/components/management/TestimonyManagement";
 import { SubscriptionManagement } from "./dashboard/admin/components/management/SubscriptionManagement";
 import { ProductsManagement } from "./dashboard/admin/components/management/ProductsManagement";
 import { CreateProductsManagements } from "./dashboard/admin/components/management/CreateProductsManagements";
 import { CreateInventoryManagements } from "./dashboard/admin/components/management/CreateInventoryManagement";
+import { BookingManagement } from "./dashboard/admin/components/management/BookingsManagements";
+import { ManagerDashboard } from "./dashboard/managers/ManagerDashboard";
 // BackToTop component with Tailwind
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -79,9 +81,20 @@ export default function App() {
               path="/user/subscription"
               element={<SubscriptionManagement />}
             />
-            <Route path="/dashboard/7281/191" element={<ProductsManagement />} />
-            <Route path="/dashboard/7" element={<CreateProductsManagements/>} />
-            <Route path="/dashboard/7292" element={<CreateInventoryManagements/>} />
+            <Route
+              path="/dashboard/7281/191"
+              element={<ProductsManagement />}
+            />
+            <Route
+              path="/dashboard/7"
+              element={<CreateProductsManagements />}
+            />
+            <Route
+              path="/dashboard/7292"
+              element={<CreateInventoryManagements />}
+            />
+            <Route path="/83920/jie09" element={<BookingManagement />} />
+            <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           </Routes>
         </div>
         <BackToTop />

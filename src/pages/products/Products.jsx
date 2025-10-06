@@ -975,6 +975,24 @@ export const Products = () => {
     }
   };
 
+  const SubmitData = async()=>{
+    try{
+  setCheckoutStatus("loading");
+      setIsCustomerInfoOpen(false);
+            setTimeout(() => {
+        setCheckoutStatus(null);
+        setIsOrderInfoModalOpen(true);
+      }, 1000);
+    }catch(error){
+      setCheckoutStatus("error");
+      console.error('Order submission error:', error);
+      toast.error("Failed to submit order. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  }
+
   const submitOrder = async () => {
     if (!customerInfo.name || !customerInfo.phone) {
       toast.error("Please fill in name and phone number", {
@@ -1043,7 +1061,7 @@ export const Products = () => {
         updatedAt: new Date()
       };
 
-      console.log('Submitting order data:', orderData);
+      // console.log('Submitting order data:', orderData);
 
       // Send data to API
       await sendOrderToAPI(orderData);
@@ -1788,7 +1806,7 @@ export const Products = () => {
                   </div>
 
                   <button
-                    onClick={submitOrder}
+                    onClick={SubmitData}
                     className="w-full bg-gradient-to-t from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-2 xs:py-3 rounded-lg font-bold text-xs xs:text-sm sm:text-base transition-all shadow-lg hover:shadow-amber-500/25"
                   >
                     Submit Order

@@ -288,7 +288,7 @@ export const CreateProductsManagements = () => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
+                className="flex-1 bg-gradient-to-b from-blue-400 to-indigo-400 py-3 rounded-lg transition-colors"
               >
                 Continue
               </button>
@@ -297,7 +297,7 @@ export const CreateProductsManagements = () => {
                   setShowSuccessModal(false);
                   resetForm();
                 }}
-                className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-gradient-to-t from-indigo-400 to-violet-400 py-3 rounded-lg transition-colors"
               >
                 Add Another
               </button>
@@ -347,7 +347,7 @@ export const CreateProductsManagements = () => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowErrorModal(false)}
-                className="flex-1 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
+                className="flex-1 bg-gradient-to-t from-red-400 to-red-600 py-3 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
               >
                 Close
               </button>
@@ -356,7 +356,7 @@ export const CreateProductsManagements = () => {
                   setShowErrorModal(false);
                   // Optionally retry submission here
                 }}
-                className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors"
+                className="flex-1 bg-gradient-to-tl from-green-400 to-blue-400 py-3 rounded-lg  transition-colors"
               >
                 Try Again
               </button>
@@ -401,7 +401,7 @@ export const CreateProductsManagements = () => {
               transition={{ delay: 0.1 }}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
             >
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 text-black p-4 rounded-2xl bg-gradient-to-b from-blue-300 to-blue-100">
                 {/* Category Selection */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Main Category */}
@@ -624,7 +624,7 @@ export const CreateProductsManagements = () => {
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    className="flex-1 px-6 py-3 border bg-gradient-to-t from-red-200 to-red-400 rounded-lg transition-colors flex items-center justify-center"
                   >
                     <CloseIcon className="mr-2 h-5 w-5" />
                     Reset Form
@@ -633,7 +633,7 @@ export const CreateProductsManagements = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                    className="flex-1 px-6 py-3 bg-gradient-to-tl from-blue-400 to-indigo-500 rounded-lg  disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >
                     {isLoading ? (
                       <>
